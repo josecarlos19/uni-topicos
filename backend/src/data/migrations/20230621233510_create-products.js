@@ -6,6 +6,13 @@ exports.up = function (knex) {
   return knex.schema
     .createTable("products", (tbl) => {
       tbl.increments();
+      tbl
+        .integer("user_id")
+        .unsigned()
+        .index()
+        .references("id")
+        .inTable("users")
+        .notNullable();
       tbl.string("name").notNullable();
       tbl.string("description").nullable();
       tbl.integer("quantity").notNullable();

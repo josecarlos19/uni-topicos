@@ -11,7 +11,8 @@ exports.up = function (knex) {
         .unsigned()
         .index()
         .references("id")
-        .inTable("users");
+        .inTable("users")
+        .notNullable();
       tbl.enu("type", ["buy", "sell"]).notNullable().defaultTo("buy");
       tbl.dateTime("created_at").notNullable().defaultTo(knex.fn.now());
       tbl.dateTime("updated_at").nullable();

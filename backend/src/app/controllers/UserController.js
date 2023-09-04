@@ -38,6 +38,7 @@ class UserController {
   async update(req, res) {
     try {
       const { id } = req.params;
+      const currentUserId = req.userId;
 
       if (!id) {
         throw new Error("Missing id");

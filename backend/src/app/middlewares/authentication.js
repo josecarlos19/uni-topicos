@@ -20,6 +20,7 @@ module.exports = async (req, res, next) => {
     );
 
     req.userId = decodedUser.id;
+    req.userRoles = decodedUser.roles;
 
     const validUser = await knex
       .select("id")
@@ -33,7 +34,7 @@ module.exports = async (req, res, next) => {
 
     return next();
   } catch (err) {
-    return res.status(401).json({ message: "Token invalid" });
+    return res.status(401).json({ message: "Token invalid", err });
   }
 
   // eslint-disable-next-line no-unreachable

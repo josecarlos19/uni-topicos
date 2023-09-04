@@ -3,7 +3,8 @@ const ProductService = require("../services/ProductService");
 class ProductController {
   async get(req, res) {
     try {
-      const result = await ProductService.get();
+      const userId = req.userId;
+      const result = await ProductService.get(userId);
 
       res.status(200).json({ products: result });
     } catch (error) {
@@ -13,8 +14,10 @@ class ProductController {
 
   async show(req, res) {
     const { id } = req.params;
+
     try {
-      const result = await ProductService.show(id);
+      const userId = req.userId;
+      const result = await ProductService.show(userId, id);
 
       res.status(200).json({ products: result });
     } catch (error) {
@@ -37,6 +40,7 @@ class ProductController {
 
       res.status(200).json({ product: result });
     } catch (error) {
+      console.log(error)
       res.status(404).json({ error: error.message });
     }
   }
@@ -45,7 +49,8 @@ class ProductController {
     const { id } = req.params;
     const { name, description, quantity, price, category, type } = req.body;
     try {
-      const result = await ProductService.update(id, {
+      const userId = req.userId;
+      const result = await ProductService.update(userId, id, {
         name,
         description,
         quantity,
@@ -63,7 +68,8 @@ class ProductController {
   async delete(req, res) {
     const { id } = req.params;
     try {
-      const result = await ProductService.delete(id);
+      const userId = req.userId;
+      const result = await ProductService.delete(userId, id);
 
       res.status(200).json({ message: "Deleted", product: result });
     } catch (error) {

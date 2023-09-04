@@ -11,13 +11,15 @@ exports.up = function (knex) {
         .unsigned()
         .index()
         .references("id")
-        .inTable("orders");
+        .inTable("orders")
+        .notNullable();
       tbl
         .integer("product_id")
         .unsigned()
         .index()
         .references("id")
-        .inTable("products");
+        .inTable("products")
+        .notNullable();
       tbl.integer("quantity").notNullable();
       tbl.float("price", 2).notNullable();
       tbl.dateTime("created_at").notNullable().defaultTo(knex.fn.now());

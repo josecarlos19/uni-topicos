@@ -4,17 +4,21 @@ const FinancialService = require("./FinancialService");
 const knex = knexC(config.development);
 
 class ProductService {
-  async get() {
-    const products = await knex.select().from("products");
+  async get(userId) {
+    const products = await knex
+      .select()
+      .from("products")
+      .where("user_id", userId);
 
     return products;
   }
 
-  async show(productId) {
+  async show(userId, productId) {
     const product = await knex
       .select()
       .from("products")
       .where("id", productId)
+      .andWhere("user_id", userId)
       .first();
 
     if (!product) {
@@ -31,30 +35,27 @@ class ProductService {
       !payload.quantity ||
       !payload.price ||
       !payload.category ||
-      !payload.type
+      !payload.type ||
+      !userId
     ) {
       throw new Error("Missing data to create a product");
     }
 
-    const [createdProduct] = await knex("products")
-      .insert(payload)
+    const createdProduct = await knex("products")
+      .insert({ ...payload, user_id: userId })
       .returning(["id", "quantity", "price"]);
 
-    await FinancialService.buy(
-      createdProduct.id,
-      userId,
-      createdProduct.quantity,
-      createdProduct.price
-    );
+    await FinancialService.buy(createdProduct, userId);
 
     return createdProduct;
   }
 
-  async update(productId, payload) {
+  async update(userId, productId, payload) {
     const product = await knex
       .select()
       .from("products")
       .where("id", productId)
+      .andWhere("user_id", userId)
       .first();
 
     if (!product) {
@@ -69,11 +70,12 @@ class ProductService {
     return result;
   }
 
-  async delete(productId) {
+  async delete(userId, productId) {
     const product = await knex
       .select()
       .from("products")
       .where("id", productId)
+      .andWhere("user_id", userId)
       .first();
 
     if (!product) {

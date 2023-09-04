@@ -9,6 +9,7 @@ exports.seed = function (knex) {
       return knex("products").insert([
         {
           name: "Maçã",
+          user_id: 1,
           description: "Vermelha e deliciosa",
           quantity: 0,
           price: 1.0,
@@ -17,6 +18,7 @@ exports.seed = function (knex) {
         },
         {
           name: "Laranja",
+          user_id: 1,
           description: "Suculenta e refrescante",
           quantity: 0,
           price: 3.5,
@@ -25,6 +27,7 @@ exports.seed = function (knex) {
         },
         {
           name: "Banana",
+          user_id: 1,
           description: "Amarela e nutritiva",
           quantity: 0,
           price: 2.5,
