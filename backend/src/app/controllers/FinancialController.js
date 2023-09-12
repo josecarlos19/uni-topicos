@@ -2,12 +2,16 @@ const FinancialService = require("../services/FinancialService");
 
 class FinancialController {
   async buy(req, res) {
-    const { products } = req.body;
+    const { customer_id, products } = req.body;
     try {
       if (products.length <= 0) {
         throw new Error("Missing products to do an order");
       }
-      const result = await FinancialService.buy(products, req.userId);
+      const result = await FinancialService.buy(
+        products,
+        customer_id,
+        req.userId
+      );
 
       res.status(201).json({ order: result });
     } catch (error) {
@@ -16,12 +20,16 @@ class FinancialController {
   }
 
   async sell(req, res) {
-    const { products } = req.body;
+    const { customer_id, products } = req.body;
     try {
       if (products.length <= 0) {
         throw new Error("Missing products to do an order");
       }
-      const result = await FinancialService.sell(products, req.userId);
+      const result = await FinancialService.sell(
+        products,
+        customer_id,
+        req.userId
+      );
 
       res.status(201).json({ order: result });
     } catch (error) {

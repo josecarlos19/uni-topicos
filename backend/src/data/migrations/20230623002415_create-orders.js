@@ -13,6 +13,13 @@ exports.up = function (knex) {
         .references("id")
         .inTable("users")
         .notNullable();
+      tbl
+        .integer("customer_id")
+        .unsigned()
+        .index()
+        .references("id")
+        .inTable("customers")
+        .nullable();
       tbl.enu("type", ["buy", "sell"]).notNullable().defaultTo("buy");
       tbl.dateTime("created_at").notNullable().defaultTo(knex.fn.now());
       tbl.dateTime("updated_at").nullable();

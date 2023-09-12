@@ -51,7 +51,7 @@ async function checkProductIsAvailableOrValidToSell(products) {
 }
 
 class FinancialService {
-  async buy(products, userId) {
+  async buy(products, buyer_id, userId) {
     products.some((product) => {
       if (product.quantity <= 0 || product.price < 0 || !product.id) {
         throw new Error("Missing product information");
@@ -62,6 +62,7 @@ class FinancialService {
     if (check.areAllProductsAvailable) {
       const orderPayload = {
         user_id: userId,
+        customer_id: null,
         type: "buy",
       };
 
@@ -77,17 +78,18 @@ class FinancialService {
     }
   }
 
-  async sell(products, userId) {
+  async sell(products, customer_id, userId) {
     products.some((product) => {
       if (product.quantity <= 0 || !product.id) {
         throw new Error("Missing product information");
       }
     });
-
+    console.table(products);
     const check = await checkProductIsAvailableOrValidToSell(products);
     if (check.areAllProductsAvailable) {
       const orderPayload = {
         user_id: userId,
+        customer_id,
         type: "sell",
       };
 
@@ -149,10 +151,12 @@ class FinancialService {
       .select(
         "orders.id as codigo_ordem",
         "orders.type as tipo_ordem",
-        "users.name as comprador"
+        "users.name as comprador",
+        "customers.name as cliente"
       )
       .from("orders")
       .innerJoin("users", "users.id", "=", "orders.user_id")
+      .leftJoin("customers", "customers.id", "=", "orders.customer_id")
       .where("orders.id", orderId)
       .first();
 
@@ -177,6 +181,7 @@ class FinancialService {
 
     if (orderHeader.tipo_ordem === "buy") {
       orderHeader.tipo_ordem = "Compra";
+      delete orderHeader.cliente;
     } else if (orderHeader.tipo_ordem === "sell") {
       orderHeader.tipo_ordem = "Venda";
     }
@@ -194,25 +199,32 @@ class FinancialService {
         .select(
           "orders.id as codigo_ordem",
           "orders.type as tipo_ordem",
-          "users.name as comprador"
+          "users.name as comprador",
+          "customers.name as cliente"
         )
         .from("orders")
         .innerJoin("users", "users.id", "=", "orders.user_id")
-        .where("orders.type", type)
+        .leftJoin("customers", "customers.id", "=", "orders.customer_id")
         .where("users.id", userId);
     } else {
       result = await knex
         .select(
           "orders.id as codigo_ordem",
           "orders.type as tipo_ordem",
-          "users.name as comprador"
+          "users.name as comprador",
+          "customers.name as cliente"
         )
         .from("orders")
         .innerJoin("users", "users.id", "=", "orders.user_id")
+        .leftJoin("customers", "customers.id", "=", "orders.customer_id")
         .where("orders.type", type);
     }
 
     result = result.map((order) => {
+      if (order.tipo_ordem === "buy") {
+        delete order.cliente;
+      }
+
       return {
         ...order,
         tipo_ordem: order.tipo_ordem === "buy" ? "compra" : "venda",

@@ -5,6 +5,7 @@ const AuthorizationMiddleware = require("./app/middlewares/authorization");
 const UserController = require("./app/controllers/UserController");
 const SessionController = require("./app/controllers/SessionController");
 const ProductController = require("./app/controllers/ProductController");
+const CustomerController = require("./app/controllers/CustomerController");
 const FinancialController = require("./app/controllers/FinancialController");
 
 //Public Routes
@@ -22,6 +23,13 @@ routes.get("/products/:id", ProductController.show);
 routes.post("/products", ProductController.store);
 routes.patch("/products/:id", ProductController.update);
 routes.delete("/products/:id", ProductController.delete);
+
+//Customers
+routes.get("/customers", CustomerController.get);
+routes.get("/customers/:id", CustomerController.show);
+routes.post("/customers", CustomerController.store);
+routes.patch("/customers/:id", CustomerController.update);
+routes.delete("/customers/:id", CustomerController.delete);
 
 //Financial
 routes.post("/financial/sell", FinancialController.sell);
