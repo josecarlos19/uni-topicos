@@ -1,0 +1,12 @@
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo p {
+  text-align: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 18px;
+}
