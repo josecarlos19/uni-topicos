@@ -14,7 +14,7 @@ class AppController {
   middlewares() {
     this.express.use(express.json());
 
-    const allowedOrigins = ["http://localhost:3001"];
+    const allowedOrigins = ["http://localhost:3000"];
 
     const corsOptions = {
       origin: (origin, callback) => {
