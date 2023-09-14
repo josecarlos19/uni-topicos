@@ -41,8 +41,8 @@ class SessionController {
         user: {
           name: user.name,
           email: user.email,
+          accessToken: generateToken(user),
         },
-        token: generateToken(user),
       });
     } catch (error) {
       res.status(400).json({ message: error.message });
