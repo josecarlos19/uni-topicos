@@ -49,7 +49,18 @@ export default function Products() {
   return (
     <Dashboard>
       <h1>Compras</h1>
-      <Table dataSource={sells} columns={columns} />
+      <Table
+        dataSource={sells}
+        columns={columns}
+        pagination={{
+          current: 1,
+          pageSize: 10,
+          onChange(page, pageSize) {
+            console.log(page, pageSize);
+            //api call triggered when number of pages changes
+          },
+        }}
+      />
     </Dashboard>
   );
 }

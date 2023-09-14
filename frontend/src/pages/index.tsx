@@ -21,15 +21,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         permanent: false,
       },
     };
-  }
-
-  return {
-    props: {
-      user: {
-        email: session.user.email,
+  } else {
+    return {
+      redirect: {
+        destination: "/products",
+        permanent: false,
       },
-    },
-  };
+    };
+  }
 };
 
 export default Home;
