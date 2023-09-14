@@ -2,6 +2,7 @@ const knexC = require("knex");
 const config = require("../../../knexfile");
 const OrderService = require("./OrderService");
 const knex = knexC(config.development);
+const moment = require("moment");
 
 async function checkProductIsAvailableOrValidToBuy(products) {
   const productIds = products.map((product) => product.id);
@@ -152,7 +153,8 @@ class FinancialService {
         "orders.id as codigo_ordem",
         "orders.type as tipo_ordem",
         "users.name as comprador",
-        "customers.name as cliente"
+        "customers.name as cliente",
+        "orders.created_at as created_at"
       )
       .from("orders")
       .innerJoin("users", "users.id", "=", "orders.user_id")
@@ -200,7 +202,8 @@ class FinancialService {
           "orders.id as codigo_ordem",
           "orders.type as tipo_ordem",
           "users.name as comprador",
-          "customers.name as cliente"
+          "customers.name as cliente",
+          "orders.created_at as created_at"
         )
         .from("orders")
         .innerJoin("users", "users.id", "=", "orders.user_id")
@@ -212,7 +215,8 @@ class FinancialService {
           "orders.id as codigo_ordem",
           "orders.type as tipo_ordem",
           "users.name as comprador",
-          "customers.name as cliente"
+          "customers.name as cliente",
+          "orders.created_at as created_at"
         )
         .from("orders")
         .innerJoin("users", "users.id", "=", "orders.user_id")
@@ -220,16 +224,31 @@ class FinancialService {
         .where("orders.type", type);
     }
 
-    result = result.map((order) => {
-      if (order.tipo_ordem === "buy") {
-        delete order.cliente;
-      }
+    for (let index = 0; index < result.length; index++) {
+      const order = result[index];
 
-      return {
-        ...order,
-        tipo_ordem: order.tipo_ordem === "buy" ? "compra" : "venda",
-      };
-    });
+      const orderProducts = await knex
+        .select(
+          "products.name as produto",
+          "orders_products.quantity as quantidade",
+          "orders_products.price as preço"
+        )
+        .from("orders_products")
+        .innerJoin("products", "products.id", "=", "orders_products.product_id")
+        .where("order_id", order.codigo_ordem);
+
+      order.total_ordem = orderProducts.reduce(
+        (sum, product) => sum + product.preço * product.quantidade,
+        0
+      );
+
+      order.total_ordem = order.total_ordem.toFixed(2);
+
+      order.tipo_ordem = order.tipo_ordem === "buy" ? "compra" : "venda";
+      order.created_at = moment(order.created_at).format("DD/MM/YYYY HH:mm:ss");
+
+      result[index] = order;
+    }
 
     return result;
   }

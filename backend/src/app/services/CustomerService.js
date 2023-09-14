@@ -1,11 +1,17 @@
 const knexC = require("knex");
 const config = require("../../../knexfile");
+const moment = require("moment");
 const knex = knexC(config.development);
 
 class CustomerService {
   async get() {
     const result = await knex.select().from("customers");
-    return result;
+    return result.map((customer) => {
+      return {
+        ...customer,
+        created_at: moment(customer.created_at).format("DD/MM/YYYY"),
+      };
+    });
   }
 
   async show(id) {

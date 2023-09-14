@@ -10,7 +10,12 @@ class ProductService {
       .from("products")
       .where("user_id", userId);
 
-    return products;
+    return products.map((product) => {
+      return {
+        ...product,
+        price: Number(product.price).toFixed(2),
+      };
+    });
   }
 
   async show(userId, productId) {
