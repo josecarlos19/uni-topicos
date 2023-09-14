@@ -1,0 +1,17 @@
+.container {
+  height: 100vh;
+  /* background-color: #0d3e73; */
+}
+
+.formCol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.logoName {
+  font-size: 32px;
+  font-family: sans-serif, 'Times New Roman';
+  /* color: #fff; */
+}
