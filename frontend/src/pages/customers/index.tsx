@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaRegEye, FaPencilAlt, FaTrashAlt } from "react-icons/fa";
+import styles from "./styles.module.css";
+import { ColumnsType } from "antd/es/table";
 
 export default function Products() {
   const axios = useAxiosAuth();
@@ -23,23 +25,32 @@ export default function Products() {
     email: string;
   }
 
-  const columns = [
+  const columns: ColumnsType<Customer> = [
     {
       title: "Nome",
       dataIndex: "name",
       key: "name",
+      width: "10%",
     },
     {
       title: "E-mail",
       dataIndex: "email",
       key: "email",
+      width: "10%",
+    },
+    {
+      title: "Criado em",
+      dataIndex: "created_at",
+      key: "created_at",
+      width: "5%",
     },
     {
       title: "Visualizar",
       dataIndex: "",
       key: "x",
+      width: "1%",
       render: (item: Customer) => (
-        <Link href={`/products/${item.id}`}>
+        <Link className={styles.containerIcons} href={`/products/${item.id}`}>
           <FaRegEye size={24} />
         </Link>
       ),
@@ -48,8 +59,9 @@ export default function Products() {
       title: "Editar",
       dataIndex: "",
       key: "x",
+      width: "1%",
       render: (item: Customer) => (
-        <Link href={`/products/${item.id}`}>
+        <Link className={styles.containerIcons} href={`/products/${item.id}`}>
           <FaPencilAlt size={24} />
         </Link>
       ),
@@ -58,14 +70,9 @@ export default function Products() {
       title: "Excluir",
       dataIndex: "",
       key: "x",
+      width: "1%",
       render: () => (
-        <button
-          style={{
-            backgroundColor: "transparent",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
+        <button className={styles.containerIcons}>
           <FaTrashAlt color={"red"} size={24} />
         </button>
       ),

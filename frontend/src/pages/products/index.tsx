@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaRegEye, FaPencilAlt, FaTrashAlt } from "react-icons/fa";
+import styles from "./styles.module.css";
 
 export default function Products() {
   const axios = useAxiosAuth();
@@ -38,43 +39,51 @@ export default function Products() {
       title: "Código",
       dataIndex: "id",
       key: "id",
+      width: "1%",
     },
     {
       title: "Nome",
       dataIndex: "name",
       key: "name",
+      width: "10%",
     },
     {
       title: "Descrição",
       dataIndex: "description",
       key: "description",
+      width: "10%",
     },
     {
-      title: "Quantidade",
+      title: "Quantidade (Unidades)",
       dataIndex: "quantity",
       key: "quantity",
+      width: "1%",
     },
     {
-      title: "Preço",
+      title: "Preço (R$)",
       dataIndex: "price",
       key: "price",
+      width: "5%",
     },
     {
       title: "Categoria",
       dataIndex: "category",
       key: "category",
+      width: "5%",
     },
     {
       title: "Tipo",
       dataIndex: "type",
       key: "type",
+      width: "5%",
     },
     {
       title: "Visualizar",
       dataIndex: "",
       key: "x",
+      width: "5%",
       render: (item: Product) => (
-        <Link href={`/products/${item.id}`}>
+        <Link className={styles.containerIcons} href={`/products/${item.id}`}>
           <FaRegEye size={24} />
         </Link>
       ),
@@ -83,8 +92,9 @@ export default function Products() {
       title: "Editar",
       dataIndex: "",
       key: "x",
+      width: "5%",
       render: (item: Product) => (
-        <Link href={`/products/${item.id}`}>
+        <Link className={styles.containerIcons} href={`/products/${item.id}`}>
           <FaPencilAlt size={24} />
         </Link>
       ),
@@ -93,14 +103,9 @@ export default function Products() {
       title: "Excluir",
       dataIndex: "",
       key: "x",
+      width: "5%",
       render: () => (
-        <button
-          style={{
-            backgroundColor: "transparent",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
+        <button className={styles.containerIcons}>
           <FaTrashAlt color={"red"} size={24} />
         </button>
       ),

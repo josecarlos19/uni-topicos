@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaRegEye } from "react-icons/fa";
+import styles from "./styles.module.css";
 
 export default function Products() {
   const axios = useAxiosAuth();
@@ -33,14 +34,21 @@ export default function Products() {
       title: "Código da venda",
       dataIndex: "codigo_ordem",
       key: "codigo_ordem",
+      width: "10%",
     },
     { title: "Cliente", dataIndex: "cliente", key: "cliente" },
+    { title: "Criada em", dataIndex: "created_at", key: "cliente" },
+    { title: "Total (R$)", dataIndex: "total_ordem", key: "total_ordem" },
     {
       title: "Visualizar",
       dataIndex: "",
       key: "x",
+      width: "10%",
       render: (item: Order) => (
-        <Link href={`/orders/${item.codigo_ordem}`}>
+        <Link
+          className={styles.containerIcons}
+          href={`/orders/${item.codigo_ordem}`}
+        >
           <FaRegEye size={24} />
         </Link>
       ),
