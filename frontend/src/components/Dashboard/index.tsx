@@ -45,7 +45,7 @@ const Dashboard = (props: { children: React.ReactNode }) => {
 
   return (
     <Layout>
-      <Sider breakpoint="lg" collapsedWidth="0">
+      <Sider style={{ height: "100vh" }} breakpoint="lg" collapsedWidth="0">
         <div>
           <div className={styles.logo}>
             <p className={styles.logoText}>Estoque Mestre</p>
@@ -85,6 +85,7 @@ const Dashboard = (props: { children: React.ReactNode }) => {
               padding: 24,
               minHeight: 360,
               background: colorBgContainer,
+              height: "calc(100vh - 155px)",
             }}
           >
             {props.children}

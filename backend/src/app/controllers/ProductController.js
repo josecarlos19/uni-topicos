@@ -3,16 +3,16 @@ const ProductService = require("../services/ProductService");
 class ProductController {
   async get(req, res) {
     try {
+      const page = req.query.page || 1;
+      const limit = req.query.limit || 10;
       const userId = req.userId;
-      const result = await ProductService.get(userId);
-      console.log(result);
-      res
-        .status(200)
-        .json({
-          products: result.products,
-          total: result.total,
-          pages: result.pages,
-        });
+      const result = await ProductService.get(userId, page, limit);
+
+      res.status(200).json({
+        products: result.products,
+        total: result.total,
+        pages: result.pages,
+      });
     } catch (error) {
       res.status(404).json({ error: error.message });
     }
