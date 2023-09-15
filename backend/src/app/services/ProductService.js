@@ -4,18 +4,29 @@ const FinancialService = require("./FinancialService");
 const knex = knexC(config.development);
 
 class ProductService {
-  async get(userId) {
-    const products = await knex
+  async get(userId, page = 1, limit = 10) {
+    //add pagination
+    let products = await knex
       .select()
       .from("products")
-      .where("user_id", userId);
+      .where("user_id", userId)
+      .limit(limit)
+      .offset((page - 1) * limit);
 
-    return products.map((product) => {
+    products = products.map((product) => {
       return {
         ...product,
         price: Number(product.price).toFixed(2),
       };
     });
+
+    const total = await knex("products").where("user_id", userId).count();
+
+    return {
+      products,
+      total: total[0]["count(*)"],
+      pages: Math.ceil(total[0].count / limit),
+    };
   }
 
   async show(userId, productId) {
@@ -50,7 +61,7 @@ class ProductService {
       .insert({ ...payload, user_id: userId })
       .returning(["id", "quantity", "price"]);
 
-    await FinancialService.buy(createdProduct, userId);
+    await FinancialService.buy(createdProduct, null, userId);
 
     return createdProduct;
   }

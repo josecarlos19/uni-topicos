@@ -5,8 +5,14 @@ class ProductController {
     try {
       const userId = req.userId;
       const result = await ProductService.get(userId);
-
-      res.status(200).json({ products: result });
+      console.log(result);
+      res
+        .status(200)
+        .json({
+          products: result.products,
+          total: result.total,
+          pages: result.pages,
+        });
     } catch (error) {
       res.status(404).json({ error: error.message });
     }
@@ -19,7 +25,7 @@ class ProductController {
       const userId = req.userId;
       const result = await ProductService.show(userId, id);
 
-      res.status(200).json({ products: result });
+      res.status(200).json({ product: result });
     } catch (error) {
       res.status(404).json({ error: error.message });
     }
@@ -28,8 +34,9 @@ class ProductController {
   async store(req, res) {
     try {
       const { name, description, quantity, price, category, type } = req.body;
+      const userId = req.userId;
 
-      const result = await ProductService.store(req.userId, {
+      const result = await ProductService.store(userId, {
         name,
         description,
         quantity,
