@@ -44,7 +44,6 @@ export default function Create() {
   };
 
   async function submit(product: Product) {
-    console.log("submit");
     setIsLoad(true);
     await axios.post("/products", product);
     setIsLoad(false);
