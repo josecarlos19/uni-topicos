@@ -1,6 +1,16 @@
 import { GetServerSideProps } from "next";
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Col, Form, Input, InputNumber, Row, Tooltip } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Tooltip,
+  notification,
+} from "antd";
+import { FaCheck } from "react-icons/fa";
 import Dashboard from "@/components/Dashboard";
 import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { useSession } from "next-auth/react";
@@ -27,12 +37,23 @@ export default function Show(props: Props) {
   const [product, setProduct] = React.useState({} as Product);
   const [isShow, setIsShow] = useState(true);
   const [isLoad, setIsLoad] = useState(false);
-  const [arrow, setArrow] = useState("Show");
+  const [arrow] = useState("Show");
 
   const router = useRouter();
 
   const { data: session } = useSession();
   const axios = useAxiosAuth();
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = () => {
+    api.open({
+      message: "Sucesso!",
+      duration: 2,
+      description:
+        "O produto foi editado com sucesso. Você será redirecionado.",
+      icon: <FaCheck size={24} color={"#3ddf14"} />,
+    });
+  };
 
   async function getProduct() {
     const response = (await axios.get(`/products/${props.id}`)).data.product;
@@ -48,6 +69,11 @@ export default function Show(props: Props) {
       await axios.patch(`/products/${props.id}`, product);
       setIsLoad(false);
       setIsShow(true);
+
+      openNotification();
+      setTimeout(() => {
+        router.push("/products");
+      }, 2000);
     }
   }
 
@@ -74,6 +100,7 @@ export default function Show(props: Props) {
   return (
     <Dashboard>
       <div>
+        {contextHolder}
         <h1>{product.name}</h1>
 
         <Row justify={"center"}>
