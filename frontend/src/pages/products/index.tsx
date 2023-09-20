@@ -52,6 +52,7 @@ export default function Products() {
       dataIndex: "id",
       key: "id",
       width: "1%",
+      responsive: ["md"],
     },
     {
       title: "Nome",
@@ -64,30 +65,35 @@ export default function Products() {
       dataIndex: "description",
       key: "description",
       width: "10%",
+      responsive: ["md"],
     },
     {
       title: "Quantidade (Unidades)",
       dataIndex: "quantity",
       key: "quantity",
       width: "1%",
+      responsive: ["md"],
     },
     {
       title: "Preço (R$)",
       dataIndex: "price",
       key: "price",
       width: "5%",
+      responsive: ["md"],
     },
     {
       title: "Categoria",
       dataIndex: "category",
       key: "category",
       width: "5%",
+      responsive: ["md"],
     },
     {
       title: "Tipo",
       dataIndex: "type",
       key: "type",
       width: "5%",
+      responsive: ["md"],
     },
     {
       title: "Detalhes",
@@ -106,6 +112,7 @@ export default function Products() {
       dataIndex: "",
       key: "x",
       width: "5%",
+      responsive: ["md"],
       render: (item: Product) => (
         <Popconfirm
           title="Deletar produto?"
