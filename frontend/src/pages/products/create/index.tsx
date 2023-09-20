@@ -1,40 +1,63 @@
 import React, { useState } from "react";
-import { Button, Col, Form, Input, InputNumber, Row } from "antd";
+import { Button, Col, Form, Input, InputNumber, Row, notification } from "antd";
 import Dashboard from "@/components/Dashboard";
 import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { useRouter } from "next/router";
+import { FaCheck } from "react-icons/fa";
+import * as yup from "yup";
+import { useFormWithSchema } from "@/lib/hooks/useFormWithSchema";
+import { Controller } from "react-hook-form";
 
-interface Product {
-  id: number;
-  user_id: number;
-  name: string;
-  description: string;
-  quantity: number;
-  price: number;
-  category: string;
-  type: string;
-  created_at: string;
-  updated_at: string;
-}
+const productYupSchema = yup.object({
+  name: yup.string().required("O nome é obrigatório"),
+  description: yup.string().required("A descrição é obrigatória"),
+  quantity: yup.number().required("A quantidade é obrigatória"),
+  price: yup.number().required("O preço é obrigatório"),
+  category: yup.string().required("A categoria é obrigatória"),
+  type: yup.string().required("O tipo é obrigatório"),
+});
+
+type Product = yup.InferType<typeof productYupSchema>;
 
 export default function Create() {
-  const [product, setProduct] = React.useState({} as Product);
   const [isLoad, setIsLoad] = useState(false);
 
-  const router = useRouter();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useFormWithSchema<Product>(productYupSchema);
 
+  const router = useRouter();
   const axios = useAxiosAuth();
 
-  async function submit() {
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = () => {
+    api.open({
+      message: "Sucesso!",
+      duration: 2,
+      description:
+        "O produto foi criado! com sucesso. Você será redirecionado.",
+      icon: <FaCheck size={24} color={"#3ddf14"} />,
+    });
+  };
+
+  async function submit(product: Product) {
+    console.log("submit");
     setIsLoad(true);
     await axios.post("/products", product);
     setIsLoad(false);
-    router.push("/products");
+    openNotification();
+    setTimeout(() => {
+      router.push("/products");
+    }, 2000);
   }
 
   return (
     <Dashboard>
       <div>
+        {contextHolder}
         <h1>Cadastrar produto</h1>
 
         <Row justify={"center"}>
@@ -47,75 +70,101 @@ export default function Create() {
             >
               <Row>
                 <Col>
-                  <Form.Item label="Nome">
-                    <Input
-                      value={product.name}
-                      onChange={(e) =>
-                        setProduct({ ...product, name: e.target.value })
-                      }
+                  <Form.Item
+                    label="Nome"
+                    validateStatus={errors.name ? "error" : "success"}
+                    help={errors.name?.message}
+                  >
+                    <Controller
+                      name="name"
+                      control={control}
+                      render={({ field }) => (
+                        <Input {...field} required={true} />
+                      )}
                     />
                   </Form.Item>
 
-                  <Form.Item label="Descrição">
-                    <Input
-                      type=""
-                      onChange={(e) =>
-                        setProduct({ ...product, description: e.target.value })
-                      }
-                      value={product.description}
+                  <Form.Item
+                    label="Descrição"
+                    validateStatus={errors.description ? "error" : "success"}
+                    help={errors.description?.message}
+                  >
+                    <Controller
+                      name="description"
+                      control={control}
+                      render={({ field }) => (
+                        <Input {...field} required={true} />
+                      )}
                     />
                   </Form.Item>
                   <Row gutter={16}>
                     <Col span={12}>
-                      <Form.Item label="Quantidade">
-                        <Input
-                          onChange={(e) =>
-                            setProduct({
-                              ...product,
-                              quantity: Number(e.target.value),
-                            })
-                          }
-                          value={product.quantity}
-                          suffix={"unidades"}
+                      <Form.Item
+                        label="Quantidade"
+                        validateStatus={errors.quantity ? "error" : "success"}
+                        help={errors.quantity?.message}
+                      >
+                        <Controller
+                          name="quantity"
+                          control={control}
+                          render={({ field }) => (
+                            <Input {...field} required={true} type="number" />
+                          )}
                         />
                       </Form.Item>
                     </Col>
                     <Col span={12}>
-                      <Form.Item label="Preço">
-                        <InputNumber
-                          prefix="R$"
-                          type="number"
-                          precision={2}
-                          value={product.price}
-                          onChange={(e) =>
-                            setProduct({
-                              ...product,
-                              price: Number(e),
-                            })
-                          }
+                      <Form.Item
+                        label="Preço"
+                        validateStatus={errors.price ? "error" : "success"}
+                        help={
+                          errors.price?.message ? "O preço é obrigatório" : ""
+                        }
+                      >
+                        <Controller
+                          name="price"
+                          control={control}
+                          render={({ field }) => (
+                            <InputNumber
+                              {...field}
+                              required={true}
+                              type="number"
+                              precision={2}
+                              prefix="R$"
+                            />
+                          )}
                         />
                       </Form.Item>
                     </Col>
                   </Row>
                   <Row gutter={16}>
                     <Col>
-                      <Form.Item label="Categoria">
-                        <Input
-                          onChange={(e) =>
-                            setProduct({ ...product, category: e.target.value })
-                          }
-                          value={product.category}
+                      <Form.Item
+                        label="Categoria"
+                        validateStatus={errors.category ? "error" : "success"}
+                        help={errors.category?.message}
+                      >
+                        <Controller
+                          name="category"
+                          control={control}
+                          render={({ field }) => (
+                            <Input {...field} required={true} />
+                          )}
                         />
                       </Form.Item>
                     </Col>
                     <Col>
-                      <Form.Item label="Tipo">
-                        <Input
-                          onChange={(e) =>
-                            setProduct({ ...product, type: e.target.value })
-                          }
-                          type=""
-                          value={product.type}
+                      <Form.Item
+                        label="Tipo"
+                        validateStatus={errors.type ? "error" : "success"}
+                        help={errors.type?.message}
+                      >
+                        <Controller
+                          name="type"
+                          control={control}
+                          render={({ field }) => (
+                            <Input {...field} required={true} />
+                          )}
                         />
                       </Form.Item>
                     </Col>
@@ -133,7 +182,11 @@ export default function Create() {
                   </Button>
                 </Col>
                 <Col push={3} span={8}>
-                  <Button type="primary" onClick={submit} size={"middle"}>
+                  <Button
+                    type="primary"
+                    onClick={handleSubmit(submit)}
+                    size={"middle"}
+                  >
                     {isLoad ? "Carregando..." : "Criar"}
                   </Button>
                 </Col>
