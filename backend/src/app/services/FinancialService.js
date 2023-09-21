@@ -85,7 +85,7 @@ class FinancialService {
         throw new Error("Missing product information");
       }
     });
-    console.table(products);
+
     const check = await checkProductIsAvailableOrValidToSell(products);
     if (check.areAllProductsAvailable) {
       const orderPayload = {
