@@ -1,18 +1,20 @@
 import Dashboard from "@/components/Dashboard";
 import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { Table } from "antd";
+import { Button, Col, Row, Table } from "antd";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaRegEye } from "react-icons/fa";
 import styles from "./styles.module.css";
+import { useRouter } from "next/router";
 
 export default function Products() {
   const axios = useAxiosAuth();
-  const [sells, setSells] = useState([]);
+  const [orders, setSells] = useState([]);
   const { data: session } = useSession();
+  const router = useRouter();
 
-  async function getSells() {
+  async function getOrder() {
     const response = (await axios.get("/financial/sell-report")).data.records;
 
     setSells(response);
@@ -25,7 +27,7 @@ export default function Products() {
 
   useEffect(() => {
     if (session?.user.accessToken) {
-      getSells();
+      getOrder();
     }
   }, [session?.user.accessToken]);
 
@@ -36,9 +38,13 @@ export default function Products() {
       key: "codigo_ordem",
       width: "10%",
     },
-    { title: "Cliente", dataIndex: "cliente", key: "cliente" },
+    { title: "Cliente", dataIndex: "comprador", key: "cliente" },
     { title: "Criada em", dataIndex: "created_at", key: "cliente" },
-    { title: "Total (R$)", dataIndex: "total_ordem", key: "total_ordem" },
+    {
+      title: "Total (R$)",
+      dataIndex: "total_ordem",
+      key: "total_ordem",
+    },
     {
       title: "Visualizar",
       dataIndex: "",
@@ -57,8 +63,17 @@ export default function Products() {
 
   return (
     <Dashboard>
-      <h1>Vendas</h1>
-      <Table dataSource={sells} columns={columns} />
+      <Row justify={"space-between"} align={"middle"}>
+        <Col>
+          <h1>Vendas</h1>
+        </Col>
+        <Col>
+          <Button onClick={() => router.push("/products/create")} type="link">
+            Realizar venda
+          </Button>
+        </Col>
+      </Row>
+      <Table dataSource={orders} columns={columns} />
     </Dashboard>
   );
 }
