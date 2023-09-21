@@ -98,7 +98,7 @@ export default function Show(props: Props) {
 
                   <Row>
                     <Col style={{ minWidth: 600 }}>
-                      <Form.Item label="Descrição">
+                      <Form.Item label="E-mail">
                         <Input
                           type=""
                           onChange={(e) =>
