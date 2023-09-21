@@ -1,22 +1,30 @@
 import Dashboard from "@/components/Dashboard";
 import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { Table } from "antd";
+import { Button, Col, Popconfirm, Row, Table, message } from "antd";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaRegEye, FaPencilAlt, FaTrashAlt } from "react-icons/fa";
+import { FaRegEye, FaTrashAlt } from "react-icons/fa";
 import styles from "./styles.module.css";
 import { ColumnsType } from "antd/es/table";
+import { useRouter } from "next/router";
 
-export default function Products() {
+export default function Customers() {
   const axios = useAxiosAuth();
-  const [products, setProducts] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const { data: session } = useSession();
+  const router = useRouter();
 
-  async function getProducts() {
+  async function getCustomers() {
     const response = (await axios.get("/customers")).data.customers;
 
-    setProducts(response);
+    setCustomers(response);
+  }
+
+  async function deleteItem(e: string) {
+    await axios.delete(`/customers/${e}`);
+    message.success("Cliente excluído com sucesso!");
+    getCustomers();
   }
 
   interface Customer {
@@ -50,19 +58,8 @@ export default function Products() {
       key: "x",
       width: "1%",
       render: (item: Customer) => (
-        <Link className={styles.containerIcons} href={`/products/${item.id}`}>
+        <Link className={styles.containerIcons} href={`/customers/${item.id}`}>
           <FaRegEye size={24} />
-        </Link>
-      ),
-    },
-    {
-      title: "Editar",
-      dataIndex: "",
-      key: "x",
-      width: "1%",
-      render: (item: Customer) => (
-        <Link className={styles.containerIcons} href={`/products/${item.id}`}>
-          <FaPencilAlt size={24} />
         </Link>
       ),
     },
@@ -70,25 +67,43 @@ export default function Products() {
       title: "Excluir",
       dataIndex: "",
       key: "x",
-      width: "1%",
-      render: () => (
-        <button className={styles.containerIcons}>
-          <FaTrashAlt color={"red"} size={24} />
-        </button>
+      width: "5%",
+      responsive: ["md"],
+      render: (item: Customer) => (
+        <Popconfirm
+          title="Deletar produto?"
+          description="Essa ação não pode ser desfeita."
+          onConfirm={() => deleteItem(item.id)}
+          okText="Sim, deletar"
+          cancelText="Não, cancelar"
+        >
+          <button className={styles.containerIcons}>
+            <FaTrashAlt color={"red"} size={24} />
+          </button>
+        </Popconfirm>
       ),
     },
   ];
 
   useEffect(() => {
     if (session?.user.accessToken) {
-      getProducts();
+      getCustomers();
     }
   }, [session?.user.accessToken]);
 
   return (
     <Dashboard>
-      <h1>Clientes</h1>
-      <Table dataSource={products} columns={columns} />
+      <Row justify={"space-between"} align={"middle"}>
+        <Col>
+          <h1>Clientes</h1>
+        </Col>
+        <Col>
+          <Button onClick={() => router.push("/customers/create")} type="link">
+            Cadastrar cliente
+          </Button>
+        </Col>
+      </Row>
+      <Table dataSource={customers} columns={columns} />
     </Dashboard>
   );
 }
