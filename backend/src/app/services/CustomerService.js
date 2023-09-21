@@ -19,8 +19,10 @@ class CustomerService {
     return result;
   }
 
-  async store(payload) {
-    const result = await knex.insert(payload).into("customers");
+  async store(payload, userId) {
+    const result = await knex
+      .insert({ ...payload, user_id: userId })
+      .into("customers");
     return result;
   }
 

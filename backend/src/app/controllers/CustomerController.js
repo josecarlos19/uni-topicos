@@ -25,12 +25,13 @@ class CustomerController {
 
   async store(req, res) {
     const { name, email } = req.body;
+    const userId = req.userId;
 
     try {
       if (!name || !email) {
         throw new Error("Missing customer information");
       }
-      const result = await CustomerService.store(req.body);
+      const result = await CustomerService.store(req.body, userId);
 
       res.status(201).json({ customer: result });
     } catch (error) {

@@ -6,6 +6,13 @@ exports.up = function (knex) {
   return knex.schema
     .createTable("customers", (tbl) => {
       tbl.increments();
+      tbl
+        .integer("user_id")
+        .unsigned()
+        .index()
+        .references("id")
+        .inTable("users")
+        .notNullable();
       tbl.string("name").notNullable();
       tbl.string("email").notNullable();
       tbl.dateTime("created_at").notNullable().defaultTo(knex.fn.now());
