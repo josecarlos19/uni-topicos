@@ -68,7 +68,7 @@ export default function Products() {
           <h1>Vendas</h1>
         </Col>
         <Col>
-          <Button onClick={() => router.push("/products/create")} type="link">
+          <Button onClick={() => router.push("/orders/create")} type="link">
             Realizar venda
           </Button>
         </Col>
