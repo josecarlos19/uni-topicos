@@ -272,6 +272,35 @@ export default function Show() {
                             }}
                             addonAfter="Un"
                           />
+
+                          <label
+                            style={{
+                              marginTop: "10px",
+                              display: "block",
+                              textAlign: "right",
+                            }}
+                          >
+                            R${" "}
+                            {(
+                              Number(
+                                products.find(
+                                  (product) => product.id === item.id,
+                                )?.price,
+                              ) * item.quantity
+                            ).toFixed(2)}
+                          </label>
+
+                          <label
+                            style={{
+                              marginTop: "10px",
+                              display: "block",
+                              textAlign: "right",
+                            }}
+                          >
+                            Disponível:{" "}
+                            {products.find((product) => product.id === item.id)!
+                              .quantity - item.quantity}
+                          </label>
                         </Card>
                       </List.Item>
                     )}
@@ -297,7 +326,11 @@ export default function Show() {
                   onClick={() => submit()}
                   type="primary"
                   size={"middle"}
-                  disabled={isLoad}
+                  disabled={
+                    isLoad ||
+                    order.customer_id === undefined ||
+                    order.products.length === 0
+                  }
                 >
                   Confirmar venda
                 </Button>
