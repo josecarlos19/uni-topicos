@@ -85,15 +85,11 @@ const Dashboard = (props: { children: React.ReactNode }) => {
               padding: 24,
               minHeight: 360,
               background: colorBgContainer,
-              height: "calc(100vh - 155px)",
             }}
           >
             {props.children}
           </div>
         </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Estoque Mestre ©2023 Created by Uninassau Team
-        </Footer>
       </Layout>
     </Layout>
   );

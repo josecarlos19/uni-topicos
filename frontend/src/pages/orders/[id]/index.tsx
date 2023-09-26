@@ -1,7 +1,6 @@
 import { GetServerSideProps } from "next";
-import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Input, Row, Table, notification } from "antd";
-import { FaCheck } from "react-icons/fa";
+import React, { useEffect } from "react";
+import { Button, Col, Form, Input, Row, Table } from "antd";
 import Dashboard from "@/components/Dashboard";
 import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { useSession } from "next-auth/react";
@@ -34,24 +33,11 @@ interface Props {
 
 export default function Show(props: Props) {
   const [order, setOrder] = React.useState({} as Order);
-  const [isShow, setIsShow] = useState(true);
-  const [isLoad, setIsLoad] = useState(false);
 
   const router = useRouter();
 
   const { data: session } = useSession();
   const axios = useAxiosAuth();
-  const [api, contextHolder] = notification.useNotification();
-
-  const openNotification = () => {
-    api.open({
-      message: "Sucesso!",
-      duration: 2,
-      description:
-        "O produto foi editado com sucesso. Você será redirecionado.",
-      icon: <FaCheck size={24} color={"#3ddf14"} />,
-    });
-  };
 
   async function getOrder() {
     const response = (await axios.get(`/financial/fiscal/orders/${props.id}`))
@@ -60,22 +46,6 @@ export default function Show(props: Props) {
     setOrder(response);
 
     console.log(order);
-  }
-
-  async function submit() {
-    if (isShow) {
-      setIsShow(false);
-    } else {
-      setIsLoad(true);
-      await axios.patch(`/orders/${props.id}`, order);
-      setIsLoad(false);
-      setIsShow(true);
-
-      openNotification();
-      setTimeout(() => {
-        router.push("/orders");
-      }, 2000);
-    }
   }
 
   useEffect(() => {
@@ -88,7 +58,6 @@ export default function Show(props: Props) {
   return (
     <Dashboard>
       <div>
-        {contextHolder}
         <h1>Visualizar ordem Nº {order?.cabeçalho_da_ordem?.codigo_ordem}</h1>
 
         <Row justify={"center"}>
@@ -103,7 +72,7 @@ export default function Show(props: Props) {
                 <Form.Item label="Comprador">
                   <Input
                     value={order?.cabeçalho_da_ordem?.comprador}
-                    disabled={isShow}
+                    disabled={true}
                   />
                 </Form.Item>
               </Col>
@@ -114,7 +83,7 @@ export default function Show(props: Props) {
                     value={moment(order?.cabeçalho_da_ordem?.created_at).format(
                       "DD/MM/YYYY",
                     )}
-                    disabled={isShow}
+                    disabled={true}
                   />
                 </Form.Item>
               </Col>
@@ -124,6 +93,22 @@ export default function Show(props: Props) {
               style={{ minWidth: 600 }}
               dataSource={order.produtos_da_ordem}
               pagination={false}
+              footer={() => (
+                <Row justify={"space-between"}>
+                  <Col span={8}>
+                    <Form.Item label="Total da ordem">
+                      <Input
+                        type=""
+                        addonBefore="R$"
+                        value={Number(
+                          order?.cabeçalho_da_ordem?.total_ordem,
+                        ).toFixed(2)}
+                        disabled={true}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              )}
             >
               <Table.Column title="Produto" dataIndex="produto" key="produto" />
               <Table.Column
@@ -140,7 +125,6 @@ export default function Show(props: Props) {
                   onClick={() => router.push("/orders")}
                   type="primary"
                   size={"middle"}
-                  disabled={isLoad}
                 >
                   Voltar
                 </Button>

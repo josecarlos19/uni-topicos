@@ -6,8 +6,12 @@ import {
   Input,
   Row,
   Select,
-  Table,
   notification,
+  List,
+  Card,
+  Space,
+  InputNumber,
+  Divider,
 } from "antd";
 import { FaCheck } from "react-icons/fa";
 import Dashboard from "@/components/Dashboard";
@@ -24,10 +28,6 @@ interface Products {
 interface Order {
   customer_id: number;
   products: Products[];
-}
-
-interface Props {
-  id: string;
 }
 
 interface CustomerLabel {
@@ -48,13 +48,13 @@ interface Product {
   updated_at: string;
 }
 
-export default function Show(props: Props) {
+export default function Show() {
   const [order, setOrder] = React.useState({} as Order);
   const [products, setProducts] = React.useState<Product[]>([]);
+  const [orderProducts, setOrderProducts] = React.useState<Products[]>([]);
 
   const [customers, setCustomers] = React.useState<CustomerLabel[]>([]);
 
-  const [isShow, setIsShow] = useState(true);
   const [isLoad, setIsLoad] = useState(false);
 
   const router = useRouter();
@@ -93,23 +93,51 @@ export default function Show(props: Props) {
   }
 
   async function submit() {
-    if (isShow) {
-      setIsShow(false);
-    } else {
-      setIsLoad(true);
-      await axios.patch(`/orders/${props.id}`, order);
-      setIsLoad(false);
-      setIsShow(true);
+    setIsLoad(true);
+    await axios.post("/financial/sell", order);
+    setIsLoad(false);
 
-      openNotification();
-      setTimeout(() => {
-        router.push("/orders");
-      }, 2000);
-    }
+    openNotification();
+    setTimeout(() => {
+      router.push("/orders");
+    }, 2000);
   }
 
   const handleChangeCustomer = (value: string) => {
     setOrder({ ...order, customer_id: Number(value) });
+  };
+
+  const handleSelectOrderProducts = (selectedValues: string[]) => {
+    setOrderProducts([]);
+    const productsAux = [];
+    for (let index = 0; index < selectedValues.length; index++) {
+      const element = selectedValues[index];
+      productsAux.push({
+        id: Number(element),
+        quantity: 1,
+        name: products.find((product) => product.id === Number(element))?.name,
+      });
+    }
+
+    setOrderProducts(productsAux);
+
+    console.log(orderProducts);
+  };
+
+  const handleOrderProductQuantity = (value: number, id: number) => {
+    const productsAux = [...orderProducts];
+    const productIndex = productsAux.findIndex((product) => product.id === id);
+    productsAux[productIndex].quantity = value;
+    setOrderProducts(productsAux);
+  };
+
+  const deleteOrderProduct = (value: string) => {
+    const productsAux = [...orderProducts];
+    const productIndex = productsAux.findIndex(
+      (product) => product.id === Number(value),
+    );
+    productsAux.splice(productIndex, 1);
+    setOrderProducts(productsAux);
   };
 
   useEffect(() => {
@@ -118,6 +146,19 @@ export default function Show(props: Props) {
       getProducts();
     }
   }, [session?.user.accessToken]);
+
+  useEffect(() => {
+    setOrder({
+      ...order,
+      products: orderProducts.map((product) => {
+        return {
+          id: product.id,
+          quantity: product.quantity,
+        };
+      }),
+    });
+    console.log(order);
+  }, [orderProducts]);
 
   return (
     <Dashboard>
@@ -130,7 +171,7 @@ export default function Show(props: Props) {
             labelCol={{ span: "auto" }}
             wrapperCol={{ span: "auto" }}
             layout="vertical"
-            style={{ minWidth: 600 }}
+            style={{ minWidth: 600, maxWidth: 600 }}
           >
             <Row gutter={16}>
               <Col span={12}>
@@ -149,25 +190,96 @@ export default function Show(props: Props) {
                   <Input
                     type=""
                     value={moment().format("DD/MM/YYYY")}
-                    disabled={isShow}
+                    disabled={true}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <Form.Item label="Produtos">
+                  <Select
+                    style={{ width: "100%" }}
+                    mode="multiple"
+                    allowClear
+                    placeholder="Selecione os produtos"
+                    optionFilterProp="children"
+                    onChange={(value) => handleSelectOrderProducts(value)}
+                    onDeselect={(value) => {
+                      deleteOrderProduct(value);
+                    }}
+                    options={products.map((product) => {
+                      return {
+                        value: String(product.id),
+                        label: product.name + " - " + "R$ " + product.price,
+                      };
+                    })}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <label>Produtos selecionados: {orderProducts.length}</label>
+
+              <Col span={24} style={{ overflow: "auto", height: "310px" }}>
+                <Form.Item style={{ paddingTop: "8px" }}>
+                  <List
+                    grid={{ column: 2 }}
+                    bordered
+                    footer={
+                      <div>
+                        <Divider />
+                        <Space>
+                          <label>Total:</label>
+                          <label>
+                            R${" "}
+                            {orderProducts
+                              .reduce(
+                                (acc, cur) =>
+                                  acc +
+                                  Number(
+                                    products.find(
+                                      (product) => product.id === cur.id,
+                                    )?.price,
+                                  ) *
+                                    cur.quantity,
+                                0,
+                              )
+                              .toFixed(2)}
+                          </label>
+                        </Space>
+                      </div>
+                    }
+                    dataSource={orderProducts}
+                    renderItem={(item: any) => (
+                      <List.Item>
+                        <Card
+                          style={{ marginTop: "10px" }}
+                          size="small"
+                          title={item.name}
+                          key={item.id}
+                        >
+                          <InputNumber
+                            style={{ width: "100%" }}
+                            min={1}
+                            max={
+                              products.find((product) => product.id === item.id)
+                                ?.quantity
+                            }
+                            defaultValue={item.quantity}
+                            onChange={(value) => {
+                              handleOrderProductQuantity(value, item.id);
+                            }}
+                            addonAfter="Un"
+                          />
+                        </Card>
+                      </List.Item>
+                    )}
                   />
                 </Form.Item>
               </Col>
             </Row>
 
-            <Table
-              style={{ minWidth: 600 }}
-              dataSource={products}
-              pagination={false}
-            >
-              <Table.Column title="Produto" dataIndex="name" key="name" />
-              <Table.Column
-                title="Quantidade(unidades)"
-                dataIndex="quantity"
-                key="quantity"
-              />
-              <Table.Column title="Preço(R$)" dataIndex="price" key="price" />
-            </Table>
             <br />
             <Row justify={"space-between"}>
               <Col>
@@ -182,12 +294,12 @@ export default function Show(props: Props) {
               </Col>
               <Col>
                 <Button
-                  onClick={() => router.push("/orders")}
+                  onClick={() => submit()}
                   type="primary"
                   size={"middle"}
                   disabled={isLoad}
                 >
-                  Confirmar
+                  Confirmar venda
                 </Button>
               </Col>
             </Row>
