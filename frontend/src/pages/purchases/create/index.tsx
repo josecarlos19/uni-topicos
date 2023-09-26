@@ -23,16 +23,12 @@ import moment from "moment";
 interface Products {
   id: number;
   quantity: number;
+  price: number;
 }
 
 interface Order {
   customer_id: number;
   products: Products[];
-}
-
-interface CustomerLabel {
-  value: string;
-  label: string;
 }
 
 interface Product {
@@ -52,8 +48,7 @@ export default function Show() {
   const [order, setOrder] = React.useState({} as Order);
   const [products, setProducts] = React.useState<Product[]>([]);
   const [orderProducts, setOrderProducts] = React.useState<Products[]>([]);
-
-  const [customers, setCustomers] = React.useState<CustomerLabel[]>([]);
+  const [totalOrder, setTotalOrder] = useState(0);
 
   const [isLoad, setIsLoad] = useState(false);
 
@@ -68,23 +63,10 @@ export default function Show() {
       message: "Sucesso!",
       duration: 2,
       description:
-        "A venda foi realizada com sucesso. Você será redirecionado.",
+        "A compra foi realizada com sucesso. Você será redirecionado.",
       icon: <FaCheck size={24} color={"#3ddf14"} />,
     });
   };
-
-  async function getCustomers() {
-    const response = (await axios.get("/customers")).data.customers.map(
-      (customer: any) => {
-        return {
-          value: String(customer.id),
-          label: customer.name,
-        };
-      },
-    );
-
-    setCustomers(response);
-  }
 
   async function getProducts() {
     const response = (await axios.get("/products")).data.products;
@@ -94,18 +76,14 @@ export default function Show() {
 
   async function submit() {
     setIsLoad(true);
-    await axios.post("/financial/sell", order);
+    await axios.post("/financial/buy", order);
     setIsLoad(false);
 
     openNotification();
     setTimeout(() => {
-      router.push("/orders");
+      router.push("/purchases");
     }, 2000);
   }
-
-  const handleChangeCustomer = (value: string) => {
-    setOrder({ ...order, customer_id: Number(value) });
-  };
 
   const handleSelectOrderProducts = (selectedValues: string[]) => {
     setOrderProducts([]);
@@ -116,10 +94,13 @@ export default function Show() {
         id: Number(element),
         quantity: 1,
         name: products.find((product) => product.id === Number(element))?.name,
+        price: Number(
+          products.find((product) => product.id === Number(element))?.price,
+        ),
       });
     }
 
-    setOrderProducts(productsAux);
+    setOrderProducts(productsAux as any);
 
     console.log(orderProducts);
   };
@@ -128,6 +109,13 @@ export default function Show() {
     const productsAux = [...orderProducts];
     const productIndex = productsAux.findIndex((product) => product.id === id);
     productsAux[productIndex].quantity = value;
+    setOrderProducts(productsAux);
+  };
+
+  const handleOrderProductPrice = (value: number, id: number) => {
+    const productsAux = [...orderProducts];
+    const productIndex = productsAux.findIndex((product) => product.id === id);
+    productsAux[productIndex].price = Number(value);
     setOrderProducts(productsAux);
   };
 
@@ -142,7 +130,6 @@ export default function Show() {
 
   useEffect(() => {
     if (session?.user.accessToken) {
-      getCustomers();
       getProducts();
     }
   }, [session?.user.accessToken]);
@@ -154,17 +141,34 @@ export default function Show() {
         return {
           id: product.id,
           quantity: product.quantity,
+          price: product.price,
         };
       }),
     });
-    console.log(order);
-  }, [orderProducts]);
+
+    if (order.products && order.products.length > 0) {
+      setTotalOrder(
+        order.products.reduce((total, product) => {
+          return (
+            total +
+            Number(
+              products.find((productAux) => productAux.id === product.id)
+                ?.price,
+            ) *
+              product.quantity
+          );
+        }, 0),
+      );
+    }
+
+    console.log(order.products);
+  }, [orderProducts, products]);
 
   return (
     <Dashboard>
       <div>
         {contextHolder}
-        <h1>Realizar venda</h1>
+        <h1>Realizar compra</h1>
 
         <Row justify={"center"}>
           <Form
@@ -175,18 +179,7 @@ export default function Show() {
           >
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item label="Cliente">
-                  <Select
-                    placeholder="Selecione um(a) cliente"
-                    optionFilterProp="children"
-                    onChange={handleChangeCustomer}
-                    options={customers}
-                    key={customers[0]?.value}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label="Data da ordem">
+                <Form.Item label="Data da compra">
                   <Input
                     type=""
                     value={moment().format("DD/MM/YYYY")}
@@ -211,7 +204,7 @@ export default function Show() {
                     options={products.map((product) => {
                       return {
                         value: String(product.id),
-                        label: product.name + " - " + "R$ " + product.price,
+                        label: product.name,
                       };
                     })}
                   />
@@ -231,22 +224,7 @@ export default function Show() {
                         <Divider />
                         <Space>
                           <label>Total:</label>
-                          <label>
-                            R${" "}
-                            {orderProducts
-                              .reduce(
-                                (acc, cur) =>
-                                  acc +
-                                  Number(
-                                    products.find(
-                                      (product) => product.id === cur.id,
-                                    )?.price,
-                                  ) *
-                                    cur.quantity,
-                                0,
-                              )
-                              .toFixed(2)}
-                          </label>
+                          <label>R$ {totalOrder.toFixed(2)}</label>
                         </Space>
                       </div>
                     }
@@ -262,15 +240,24 @@ export default function Show() {
                           <InputNumber
                             style={{ width: "100%" }}
                             min={1}
-                            max={
-                              products.find((product) => product.id === item.id)
-                                ?.quantity
-                            }
                             defaultValue={item.quantity}
                             onChange={(value) => {
                               handleOrderProductQuantity(value, item.id);
                             }}
                             addonAfter="Un"
+                          />
+
+                          <InputNumber
+                            min={"0"}
+                            defaultValue={
+                              products.find((product) => product.id === item.id)
+                                ?.price
+                            }
+                            placeholder="Preço"
+                            addonBefore={"R$"}
+                            onChange={(value) => {
+                              handleOrderProductPrice(Number(value), item.id);
+                            }}
                           />
 
                           <label
@@ -280,7 +267,7 @@ export default function Show() {
                               textAlign: "right",
                             }}
                           >
-                            R${" "}
+                            Subtotal: R${" "}
                             {(
                               Number(
                                 products.find(
@@ -299,7 +286,7 @@ export default function Show() {
                           >
                             Disponível:{" "}
                             {products.find((product) => product.id === item.id)!
-                              .quantity - item.quantity}
+                              .quantity + item.quantity}
                           </label>
                         </Card>
                       </List.Item>
@@ -327,9 +314,7 @@ export default function Show() {
                   type="primary"
                   size={"middle"}
                   disabled={
-                    isLoad ||
-                    order.customer_id === undefined ||
-                    order.products.length === 0
+                    isLoad || (order.products && order.products.length === 0)
                   }
                 >
                   Confirmar venda

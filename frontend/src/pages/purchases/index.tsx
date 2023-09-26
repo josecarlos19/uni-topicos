@@ -1,52 +1,56 @@
 import Dashboard from "@/components/Dashboard";
 import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { Table } from "antd";
+import { Button, Col, Row, Table } from "antd";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaRegEye } from "react-icons/fa";
 import styles from "./styles.module.css";
+import { useRouter } from "next/router";
 
 export default function Products() {
   const axios = useAxiosAuth();
-  const [sells, setSells] = useState([]);
+  const [orders, setSells] = useState([]);
   const { data: session } = useSession();
+  const router = useRouter();
 
-  async function getSells() {
+  async function getOrder() {
     const response = (await axios.get("/financial/buy-report")).data.records;
 
     setSells(response);
   }
 
-  useEffect(() => {
-    if (session?.user.accessToken) {
-      getSells();
-    }
-  }, [session?.user.accessToken]);
-
-  interface Sell {
+  interface Order {
     codigo_ordem: string;
     cliente: string;
   }
 
+  useEffect(() => {
+    if (session?.user.accessToken) {
+      getOrder();
+    }
+  }, [session?.user.accessToken]);
+
   const columns = [
     {
-      title: "Código da compra",
+      title: "Código da venda",
       dataIndex: "codigo_ordem",
       key: "codigo_ordem",
       width: "10%",
     },
+    { title: "Cliente", dataIndex: "comprador", key: "cliente" },
+    { title: "Criada em", dataIndex: "created_at", key: "cliente" },
     {
-      title: "Criada em",
-      dataIndex: "created_at",
-      key: "cliente",
+      title: "Total (R$)",
+      dataIndex: "total_ordem",
+      key: "total_ordem",
     },
-    { title: "Total (R$)", dataIndex: "total_ordem", key: "total_ordem" },
     {
       title: "Visualizar",
       dataIndex: "",
       key: "x",
-      render: (item: Sell) => (
+      width: "10%",
+      render: (item: Order) => (
         <Link
           className={styles.containerIcons}
           href={`/purchases/${item.codigo_ordem}`}
@@ -59,19 +63,17 @@ export default function Products() {
 
   return (
     <Dashboard>
-      <h1>Compras</h1>
-      <Table
-        dataSource={sells}
-        columns={columns}
-        pagination={{
-          current: 1,
-          pageSize: 10,
-          onChange(page, pageSize) {
-            console.log(page, pageSize);
-            //api call triggered when number of pages changes
-          },
-        }}
-      />
+      <Row justify={"space-between"} align={"middle"}>
+        <Col>
+          <h1>Compras</h1>
+        </Col>
+        <Col>
+          <Button onClick={() => router.push("/purchases/create")} type="link">
+            Realizar compra
+          </Button>
+        </Col>
+      </Row>
+      <Table dataSource={orders} columns={columns} />
     </Dashboard>
   );
 }
