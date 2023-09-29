@@ -1,4 +1,4 @@
-# Api Product Manager
+# Api Estoque Mestre
 
 ### Tecnologias utilizadas
 
