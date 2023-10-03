@@ -48,7 +48,6 @@ class UserService {
   }
 
   async update(id, payload) {
-    console.log("opa", id, payload);
     const user = await knex.select().from("users").where("id", id).first();
 
     if (!user) {
