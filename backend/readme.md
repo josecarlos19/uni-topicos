@@ -1,4 +1,4 @@
-# Api Product Manager
+# Api Estoque Mestre
 
 ### Tecnologias utilizadas
 
@@ -22,5 +22,5 @@
   - ````Cria o banco de dados e as tabelas````
 - Executar **npx knex seed:run**
   - ```Popula o banco de dados. Mais especificamente as tabelas de usuários e produtos```
-- E por fim, executar **npm start** para iniciar o servidor na porta 3000
-  - ```O servidor estará disponível em http://localhost:3000```
+- E por fim, executar **npm run dev** para iniciar o servidor na porta 3001
+  - ```O servidor estará disponível em http://localhost:3001```
