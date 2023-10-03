@@ -4,8 +4,16 @@ const moment = require("moment");
 const knex = knexC(config.development);
 
 class CustomerService {
-  async get() {
-    const result = await knex.select().from("customers");
+  async get(userId) {
+    const result = await knex
+      .select()
+      .from("customers")
+      .where({ user_id: userId });
+
+    if (!result) {
+      return [];
+    }
+
     return result.map((customer) => {
       return {
         ...customer,
@@ -14,8 +22,12 @@ class CustomerService {
     });
   }
 
-  async show(id) {
-    const result = await knex.select().from("customers").where({ id });
+  async show(id, userId) {
+    const result = await knex
+      .select()
+      .from("customers")
+      .where({ id })
+      .andWhere({ user_id: userId });
     return result;
   }
 

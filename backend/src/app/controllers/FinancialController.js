@@ -53,8 +53,9 @@ class FinancialController {
   }
 
   async buyReport(req, res) {
+    const userId = req.userId;
     try {
-      const result = await FinancialService.buyReport();
+      const result = await FinancialService.buyReport(userId);
 
       res.status(201).json({ records: result });
     } catch (error) {
@@ -75,8 +76,9 @@ class FinancialController {
 
   async sellReport(req, res) {
     const { id } = req.params;
+    const userId = req.userId;
     try {
-      const result = await FinancialService.sellReport(id);
+      const result = await FinancialService.sellReport(userId);
 
       res.status(201).json({ records: result });
     } catch (error) {

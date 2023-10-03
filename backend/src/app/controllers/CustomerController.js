@@ -3,7 +3,8 @@ const CustomerService = require("../services/CustomerService");
 class CustomerController {
   async get(req, res) {
     try {
-      const result = await CustomerService.get();
+      const userId = req.userId;
+      const result = await CustomerService.get(userId);
 
       res.status(200).json({ customers: result });
     } catch (error) {
@@ -13,9 +14,10 @@ class CustomerController {
 
   async show(req, res) {
     const { id } = req.params;
+    const userId = req.userId;
 
     try {
-      const result = await CustomerService.show(id);
+      const result = await CustomerService.show(id, userId);
 
       res.status(200).json({ customer: result });
     } catch (error) {
