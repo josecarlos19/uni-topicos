@@ -6,6 +6,7 @@ import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import moment from "moment";
+import { useForm } from "react-hook-form";
 
 interface Products {
   produto: string;
@@ -62,6 +63,7 @@ export default function Show(props: Props) {
 
         <Row justify={"center"}>
           <Form
+            form={form}
             labelCol={{ span: "auto" }}
             wrapperCol={{ span: "auto" }}
             layout="vertical"
@@ -84,6 +86,9 @@ export default function Show(props: Props) {
             <Table
               style={{ minWidth: 600 }}
               dataSource={order.produtos_da_ordem}
+              rowKey={(resource) =>
+                resource.produto + order.cabeçalho_da_ordem.codigo_ordem
+              }
               pagination={false}
               footer={() => (
                 <Row justify={"space-between"}>

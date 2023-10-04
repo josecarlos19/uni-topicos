@@ -71,7 +71,7 @@ export default function Show(props: Props) {
               <Col span={12}>
                 <Form.Item label="Comprador">
                   <Input
-                    value={order?.cabeçalho_da_ordem?.comprador}
+                    value={order?.cabeçalho_da_ordem?.cliente}
                     disabled={true}
                   />
                 </Form.Item>
@@ -93,6 +93,9 @@ export default function Show(props: Props) {
               style={{ minWidth: 600 }}
               dataSource={order.produtos_da_ordem}
               pagination={false}
+              rowKey={(resource) =>
+                resource.produto + order.cabeçalho_da_ordem.codigo_ordem
+              }
               footer={() => (
                 <Row justify={"space-between"}>
                   <Col span={8}>

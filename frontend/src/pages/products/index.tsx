@@ -156,7 +156,8 @@ export default function Products() {
           },
         }}
         dataSource={products}
-        columns={columns}
+        columns={columns as any}
+        rowKey={(record: any) => record.id}
       />
     </Dashboard>
   );

@@ -23,9 +23,6 @@ interface Product {
 export default function Show() {
   const [products, setProducts] = useState<Product[]>([]);
   const [form] = Form.useForm();
-  const items = Form.useWatch("items", form);
-
-  console.log(items);
 
   const router = useRouter();
 
@@ -33,38 +30,37 @@ export default function Show() {
   const axios = useAxiosAuth();
 
   const handleOrderItem = (value: any) => {
-    console.log("value", value);
-    // const formValues = form.getFieldsValue(["items"]);
-    // const itemsArray = formValues.items;
+    const formValues = form.getFieldsValue(["items"]);
+    const itemsArray = formValues.items;
+    console.log(itemsArray);
+    const isDuplicate = itemsArray.some((item: any) => item.id === value);
 
-    // const isDuplicate = itemsArray.some((item: any) => item.id === value);
+    if (isDuplicate) {
+      //remove the new value from the array
+      const lastIndexOfNewValue = itemsArray.lastIndexOf(value);
+      console.log(lastIndexOfNewValue);
+      itemsArray.splice(lastIndexOfNewValue, 1);
 
-    // if (isDuplicate) {
-    //   //remove the new value from the array
-    //   const lastIndexOfNewValue = itemsArray.lastIndexOf(value);
+      //update the array
 
-    //   itemsArray.splice(lastIndexOfNewValue, 1);
-
-    //   //update the array
-
-    //   form.setFieldsValue({
-    //     items: [
-    //       ...itemsArray,
-    //       {
-    //         id: value,
-    //       },
-    //     ],
-    //   });
-    // } else {
-    //   form.setFieldsValue({
-    //     items: [
-    //       ...itemsArray,
-    //       {
-    //         id: value,
-    //       },
-    //     ],
-    //   });
-    // }
+      form.setFieldsValue({
+        items: [
+          ...itemsArray,
+          {
+            id: value,
+          },
+        ],
+      });
+    } else {
+      form.setFieldsValue({
+        items: [
+          ...itemsArray,
+          {
+            id: value,
+          },
+        ],
+      });
+    }
   };
 
   async function getProducts() {
@@ -193,17 +189,7 @@ export default function Show() {
                         </Card>
                       ))}
 
-                      <Button
-                        type="dashed"
-                        onClick={() =>
-                          add({
-                            id: null,
-                            quantity: 1,
-                            price: 1,
-                          })
-                        }
-                        block
-                      >
+                      <Button type="dashed" onClick={() => add()} block>
                         + Adicionar produtos
                       </Button>
                     </div>

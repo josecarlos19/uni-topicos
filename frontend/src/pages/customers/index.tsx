@@ -103,7 +103,11 @@ export default function Customers() {
           </Button>
         </Col>
       </Row>
-      <Table dataSource={customers} columns={columns} />
+      <Table
+        rowKey={(record: Customer) => record.id}
+        dataSource={customers}
+        columns={columns}
+      />
     </Dashboard>
   );
 }

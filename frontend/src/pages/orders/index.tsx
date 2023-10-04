@@ -38,7 +38,7 @@ export default function Products() {
       key: "codigo_ordem",
       width: "10%",
     },
-    { title: "Cliente", dataIndex: "comprador", key: "cliente" },
+    { title: "Cliente", dataIndex: "cliente", key: "cliente" },
     { title: "Criada em", dataIndex: "created_at", key: "cliente" },
     {
       title: "Total (R$)",
@@ -73,7 +73,11 @@ export default function Products() {
           </Button>
         </Col>
       </Row>
-      <Table dataSource={orders} columns={columns} />
+      <Table
+        rowKey={(record: Order) => record.codigo_ordem}
+        dataSource={orders}
+        columns={columns}
+      />
     </Dashboard>
   );
 }
