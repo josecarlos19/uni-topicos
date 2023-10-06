@@ -10,7 +10,7 @@ const FinancialController = require("./app/controllers/FinancialController");
 
 //Public Routes
 //Users
-routes.post("/register", UserController.store);
+routes.post("/signup", UserController.store);
 //Session
 routes.post("/sessions", SessionController.login);
 
