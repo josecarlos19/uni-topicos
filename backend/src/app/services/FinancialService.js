@@ -208,7 +208,9 @@ class FinancialService {
         .from("orders")
         .innerJoin("users", "users.id", "=", "orders.user_id")
         .leftJoin("customers", "customers.id", "=", "orders.customer_id")
-        .where("users.id", userId);
+        .where("users.id", userId)
+        .where("orders.type", type)
+        .orderBy("orders.created_at", "desc");
     } else {
       result = await knex
         .select(
@@ -221,7 +223,8 @@ class FinancialService {
         .from("orders")
         .innerJoin("users", "users.id", "=", "orders.user_id")
         .leftJoin("customers", "customers.id", "=", "orders.customer_id")
-        .where("orders.type", type);
+        .where("orders.type", type)
+        .orderBy("orders.created_at", "desc");
     }
 
     for (let index = 0; index < result.length; index++) {
