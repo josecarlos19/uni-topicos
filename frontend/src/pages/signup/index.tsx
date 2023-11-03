@@ -5,36 +5,39 @@ import styles from "./styles.module.css";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { PiWarningOctagonFill } from "react-icons/pi";
+import { AiOutlineMail } from "react-icons/ai";
+import axios from "axios";
+import { convertToObject } from "typescript";
 
 const App = () => {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
 
-  const openNotification = () => {
+  const openNotification = (error: string) => {
     api.open({
-      message: "Erro ao fazer login!",
+      message: "Erro ao criar conta!",
       duration: 4,
-      description:
-        "Verifique se o e-mail e a senha estão corretos e tente novamente.",
+      description: error.toLowerCase().includes("Email")
+        ? "Este e-mail já está em uso."
+        : "Verifique se os dados estão corretos e tente novamente.",
       icon: <PiWarningOctagonFill size={24} color={"#E87D85"} />,
     });
   };
 
   const submit = async () => {
-    const login = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-      callbackUrl: "/products",
-    });
-
-    if (login?.ok) {
-      router.push(login.url as string);
-    } else {
-      openNotification();
-    }
+    await axios
+      .post(`http://localhost:3001/signup`, {
+        email,
+        name,
+        password,
+      })
+      .then(() => {
+        router.push("/login");
+      })
+      .catch((error) => openNotification(error.response.data.error));
   };
 
   return (
@@ -60,9 +63,25 @@ const App = () => {
               ]}
             >
               <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
+                prefix={<AiOutlineMail className="site-form-item-icon" />}
                 placeholder="E-mail"
                 onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: "Digite o seu nome",
+                },
+              ]}
+            >
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="Nome"
+                onChange={(e) => setName(e.target.value)}
               />
             </Form.Item>
             <Form.Item
@@ -79,17 +98,32 @@ const App = () => {
               />
             </Form.Item>
 
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Digite sua senha novamente para prosseguir",
+                },
+              ]}
+            >
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="Confirme sua senha"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Form.Item>
+
             <Form.Item>
               <Button
                 type="primary"
                 htmlType="submit"
                 className="login-form-button"
-                style={{ marginRight: "5px" }}
                 onClick={submit}
               >
-                Login
+                Criar conta
               </Button>
-              ou <a href="/signup">Criar conta!</a>
             </Form.Item>
           </Form>
         </Col>
