@@ -19,6 +19,7 @@ exports.up = function (knex) {
       tbl.float("price", 2).notNullable();
       tbl.string("category").notNullable();
       tbl.string("type").nullable();
+      tbl.dateTime("deleted_at").nullable();
       tbl.dateTime("created_at").notNullable().defaultTo(knex.fn.now());
       tbl.dateTime("updated_at").nullable();
     })

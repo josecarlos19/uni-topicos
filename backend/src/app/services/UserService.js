@@ -81,7 +81,7 @@ class UserService {
       throw new Error("User not found");
     }
 
-    await knex("users").where("id", id).del();
+    await knex("users").update("deleted_at", new Date()).where("id", id);
   }
 }
 

@@ -8,7 +8,8 @@ class CustomerService {
     const result = await knex
       .select()
       .from("customers")
-      .where({ user_id: userId });
+      .where({ user_id: userId })
+      .andWhere({ deleted_at: null });
 
     if (!result) {
       return [];
@@ -54,7 +55,9 @@ class CustomerService {
   }
 
   async delete(id) {
-    const result = await knex("customers").where({ id }).del();
+    const result = await knex("customers")
+      .update({ deleted_at: new Date() })
+      .where({ id });
     return result;
   }
 }

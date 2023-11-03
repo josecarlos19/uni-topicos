@@ -14,7 +14,7 @@ exports.seed = function (knex) {
           quantity: 0,
           price: 1.0,
           category: "Fruta",
-          type: "Maçã Gala",
+          type: "Maçã Argentina",
         },
         {
           name: "Laranja",

@@ -10,6 +10,7 @@ exports.up = function (knex) {
       tbl.string("email").notNullable();
       tbl.json("roles").nullable();
       tbl.string("password").notNullable();
+      tbl.dateTime("deleted_at").nullable();
       tbl.dateTime("created_at").notNullable().defaultTo(knex.fn.now());
       tbl.dateTime("updated_at").nullable();
     })

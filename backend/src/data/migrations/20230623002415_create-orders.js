@@ -21,6 +21,7 @@ exports.up = function (knex) {
         .inTable("customers")
         .nullable();
       tbl.enu("type", ["buy", "sell"]).notNullable().defaultTo("buy");
+      tbl.dateTime("deleted_at").nullable();
       tbl.dateTime("created_at").notNullable().defaultTo(knex.fn.now());
       tbl.dateTime("updated_at").nullable();
     })

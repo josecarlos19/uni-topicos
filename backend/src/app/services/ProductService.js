@@ -5,11 +5,11 @@ const knex = knexC(config.development);
 
 class ProductService {
   async get(userId, page = 1, limit = 10) {
-    //add pagination
     let products = await knex
       .select()
       .from("products")
       .where("user_id", userId)
+      .andWhere("deleted_at", null)
       .limit(limit)
       .offset((page - 1) * limit);
 
@@ -20,7 +20,10 @@ class ProductService {
       };
     });
 
-    const total = await knex("products").where("user_id", userId).count();
+    const total = await knex("products")
+      .where("user_id", userId)
+      .andWhere("deleted_at", null)
+      .count();
 
     return {
       products,
@@ -98,7 +101,9 @@ class ProductService {
       throw new Error("Product not found");
     }
 
-    await knex("products").where("id", productId).del();
+    await knex("products")
+      .update("deleted_at", new Date())
+      .where("id", productId);
 
     return productId;
   }
