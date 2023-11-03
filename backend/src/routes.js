@@ -34,6 +34,7 @@ routes.delete("/customers/:id", CustomerController.delete);
 //Financial
 routes.post("/financial/sell", FinancialController.sell);
 routes.post("/financial/buy", FinancialController.buy);
+routes.delete("/financial/orders/:id", FinancialController.cancel);
 routes.get("/financial/buy-report", FinancialController.buyReport);
 routes.get(
   "/financial/users/:id/buy-report",

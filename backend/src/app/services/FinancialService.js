@@ -117,6 +117,12 @@ class FinancialService {
     }
   }
 
+  async cancel(orderId) {
+    const result = await OrderService.cancel(orderId);
+
+    return result;
+  }
+
   async sellOld(productId, userId, quantity) {
     const foundProduct = await knex
       .select()
@@ -203,7 +209,8 @@ class FinancialService {
           "orders.type as tipo_ordem",
           "users.name as comprador",
           "customers.name as cliente",
-          "orders.created_at as created_at"
+          "orders.created_at as created_at",
+          "orders.deleted_at as deleted_at"
         )
         .from("orders")
         .innerJoin("users", "users.id", "=", "orders.user_id")
@@ -218,6 +225,7 @@ class FinancialService {
           "orders.type as tipo_ordem",
           "users.name as comprador",
           "customers.name as cliente",
+          "orders.deleted_at as deleted_at",
           "orders.created_at as created_at"
         )
         .from("orders")

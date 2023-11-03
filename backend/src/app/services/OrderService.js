@@ -52,6 +52,35 @@ class OrderService {
 
     return result;
   }
+
+  async cancel(id) {
+    const [order] = await knex("orders").where("id", id).returning("*");
+
+    if (!order) {
+      throw new Error("Order not found");
+    }
+
+    const products = await knex("orders_products")
+      .where("order_id", id)
+      .returning("*");
+
+    for (let product of products) {
+      const [productInStock] = await knex("products")
+        .where("id", product.product_id)
+        .returning("*");
+      productInStock.quantity += product.quantity;
+      await knex("products")
+        .update({ quantity: productInStock.quantity })
+        .where("id", product.product_id);
+    }
+
+    const result = await knex("orders")
+      .update({ deleted_at: new Date() })
+      .where("id", id)
+      .returning("*");
+
+    return result;
+  }
 }
 
 module.exports = new OrderService();

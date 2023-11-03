@@ -37,6 +37,20 @@ class FinancialController {
     }
   }
 
+  async cancel(req, res) {
+    const { id } = req.params;
+    try {
+      if (!id) {
+        throw new Error("Missing id to find an order");
+      }
+      const result = await FinancialService.cancel(id);
+
+      res.status(201).json({ order: result });
+    } catch (error) {
+      res.status(404).json({ error: error.message });
+    }
+  }
+
   async fiscal(req, res) {
     const { id } = req.params;
 
