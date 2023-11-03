@@ -1,10 +1,10 @@
 import Dashboard from "@/components/Dashboard";
 import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { Button, Col, Row, Table } from "antd";
+import { Button, Col, Popconfirm, Row, Table } from "antd";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaRegEye } from "react-icons/fa";
+import { FaRegEye, FaTrash } from "react-icons/fa";
 import styles from "./styles.module.css";
 import { useRouter } from "next/router";
 
@@ -18,6 +18,11 @@ export default function Products() {
     const response = (await axios.get("/financial/sell-report")).data.records;
 
     setSells(response);
+  }
+
+  async function deleteOrder(id: string) {
+    await axios.delete(`/financial/orders/${id}`);
+    getOrder();
   }
 
   interface Order {
@@ -44,6 +49,27 @@ export default function Products() {
       title: "Total (R$)",
       dataIndex: "total_ordem",
       key: "total_ordem",
+    },
+    {
+      title: "Cancelar",
+      dataIndex: "",
+      key: "deleted_at",
+      width: "10%",
+      render: (item: any) =>
+        !item.deleted_at ? (
+          <Popconfirm
+            title="Tem certeza que deseja cancelar esta venda?"
+            onConfirm={() => deleteOrder(item.codigo_ordem)}
+            okText="Sim"
+            cancelText="Não"
+          >
+            <Button type="link">
+              <FaTrash size={24} />
+            </Button>
+          </Popconfirm>
+        ) : (
+          <></>
+        ),
     },
     {
       title: "Visualizar",
