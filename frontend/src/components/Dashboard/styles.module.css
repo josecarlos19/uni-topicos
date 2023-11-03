@@ -22,3 +22,7 @@ margin: 0px 30px;
 .user {
   font-size: 12px;
 }
+
+.side{
+  height: calc(140vh - 6px);
+}

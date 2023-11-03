@@ -8,7 +8,7 @@ import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import DropDown from "@/components/DropDown";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 
 const Dashboard = (props: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -45,7 +45,7 @@ const Dashboard = (props: { children: React.ReactNode }) => {
 
   return (
     <Layout>
-      <Sider style={{ height: "100vh" }} breakpoint="lg" collapsedWidth="0">
+      <Sider className={styles.side} breakpoint="lg" collapsedWidth="0">
         <div>
           <div className={styles.logo}>
             <p className={styles.logoText}>Estoque Mestre</p>
