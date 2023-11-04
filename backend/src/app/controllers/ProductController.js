@@ -33,13 +33,22 @@ class ProductController {
 
   async store(req, res) {
     try {
-      const { name, description, quantity, price, category, type } = req.body;
+      const {
+        name,
+        description,
+        quantity,
+        price,
+        category,
+        type,
+        min_quantity,
+      } = req.body;
       const userId = req.userId;
 
       const result = await ProductService.store(userId, {
         name,
         description,
         quantity,
+        min_quantity,
         price,
         category,
         type,
@@ -53,7 +62,8 @@ class ProductController {
 
   async update(req, res) {
     const { id } = req.params;
-    const { name, description, quantity, price, category, type } = req.body;
+    const { name, description, quantity, price, category, type, min_quantity } =
+      req.body;
     try {
       const userId = req.userId;
       const result = await ProductService.update(userId, id, {
@@ -62,6 +72,7 @@ class ProductController {
         quantity,
         price,
         category,
+        min_quantity,
         type,
       });
 

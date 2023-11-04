@@ -54,6 +54,7 @@ class ProductService {
       !payload.quantity ||
       !payload.price ||
       !payload.category ||
+      !payload.min_quantity ||
       !payload.type ||
       !userId
     ) {
