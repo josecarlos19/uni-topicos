@@ -22,6 +22,7 @@ interface Product {
   name: string;
   description: string;
   quantity: number;
+  min_quantity: number;
   price: number;
   category: string;
   type: string;
@@ -73,7 +74,7 @@ export default function Show(props: Props) {
       openNotification();
       setTimeout(() => {
         router.push("/products");
-      }, 2000);
+      }, 1000);
     }
   }
 
@@ -134,7 +135,7 @@ export default function Show(props: Props) {
                     />
                   </Form.Item>
                   <Row gutter={16}>
-                    <Col span={12}>
+                    <Col span={6}>
                       <Tooltip
                         placement="topLeft"
                         title={
@@ -151,10 +152,26 @@ export default function Show(props: Props) {
                         </Form.Item>
                       </Tooltip>
                     </Col>
-                    <Col span={12}>
+                    <Col span={6}>
+                      <Form.Item label="Qtd. mínima">
+                        <Input
+                          value={product.min_quantity}
+                          suffix={"unidades"}
+                          disabled={isShow}
+                          onChange={(e) =>
+                            setProduct({
+                              ...product,
+                              min_quantity: Number(e.target.value),
+                            })
+                          }
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
                       <Form.Item label="Preço">
                         <InputNumber
                           prefix="R$"
+                          style={{ width: "100%" }}
                           type="number"
                           precision={2}
                           value={product.price}
@@ -169,6 +186,7 @@ export default function Show(props: Props) {
                       </Form.Item>
                     </Col>
                   </Row>
+
                   <Row gutter={16}>
                     <Col>
                       <Form.Item label="Categoria">
