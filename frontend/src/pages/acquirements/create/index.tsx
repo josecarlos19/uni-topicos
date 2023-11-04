@@ -63,7 +63,7 @@ export default function Show() {
       message: "Sucesso!",
       duration: 2,
       description:
-        "A venda foi realizada com sucesso. Você será redirecionado.",
+        "A compra foi realizada com sucesso. Você será redirecionado.",
       icon: <FaCheck size={24} color={"#3ddf14"} />,
     });
   };
@@ -335,7 +335,7 @@ export default function Show() {
                   onClick={submit}
                   type="primary"
                   size={"middle"}
-                  disabled={!(isLoad && orderProducts.length > 0)}
+                  disabled={isLoad || orderProducts.length <= 0}
                 >
                   Confirmar compra
                 </Button>

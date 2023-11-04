@@ -192,8 +192,15 @@ export default function Show() {
                     })}
                 />
               </Col>
-              <Col span={6}>
-                <label>Quantidade</label>
+              <Col span={8}>
+                <label>
+                  Quantidade (Máx:{" "}
+                  {
+                    products.find((product) => product.id === currentProduct.id)
+                      ?.quantity
+                  }
+                  )
+                </label>
                 <InputNumber
                   style={{ width: "100%", paddingTop: "5px" }}
                   disabled={currentProduct.id === undefined}
@@ -208,6 +215,9 @@ export default function Show() {
                   value={currentProduct.quantity}
                 />
               </Col>
+            </Row>
+
+            <Row style={{ paddingTop: "10px" }} gutter={16}>
               <Col span={6}>
                 <label>Subtotal</label>
 
@@ -226,6 +236,9 @@ export default function Show() {
                   addonBefore="R$"
                 />
               </Col>
+            </Row>
+
+            <Row style={{ paddingTop: "10px" }} gutter={16}>
               <Row>
                 <Col span={2}>
                   <Button
@@ -239,7 +252,6 @@ export default function Show() {
                 </Col>
               </Row>
             </Row>
-
             <Row style={{ paddingTop: "20px" }}>
               <label style={{ paddingBottom: "10px" }}>
                 Produtos selecionados: {orderProducts.length}
