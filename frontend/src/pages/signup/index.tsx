@@ -119,7 +119,7 @@ const App = () => {
               <Row gutter={10}>
                 <Col flex={1}>
                   <Button
-                    type="primary"
+                    type="link"
                     htmlType="submit"
                     className="login-form-button"
                     onClick={() => router.push("/login")}
