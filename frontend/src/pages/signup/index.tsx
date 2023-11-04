@@ -116,14 +116,28 @@ const App = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="login-form-button"
-                onClick={submit}
-              >
-                Criar conta
-              </Button>
+              <Row gutter={10}>
+                <Col flex={1}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="login-form-button"
+                    onClick={() => router.push("/login")}
+                  >
+                    Voltar
+                  </Button>
+                </Col>
+                <Col flex={1}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="login-form-button"
+                    onClick={submit}
+                  >
+                    Criar conta
+                  </Button>
+                </Col>
+              </Row>
             </Form.Item>
           </Form>
         </Col>
