@@ -49,7 +49,7 @@ export default function Create() {
     openNotification();
     setTimeout(() => {
       router.push("/customers");
-    }, 2000);
+    }, 1000);
   }
 
   return (

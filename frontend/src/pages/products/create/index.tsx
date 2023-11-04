@@ -50,7 +50,7 @@ export default function Create() {
     openNotification();
     setTimeout(() => {
       router.push("/products");
-    }, 2000);
+    }, 1000);
   }
 
   return (

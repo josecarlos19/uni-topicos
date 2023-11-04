@@ -60,7 +60,7 @@ export default function Show(props: Props) {
       openNotification();
       setTimeout(() => {
         router.push("/customers");
-      }, 2000);
+      }, 1000);
     }
   }
 
