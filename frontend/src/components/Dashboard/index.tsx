@@ -39,7 +39,7 @@ const Dashboard = (props: { children: React.ReactNode }) => {
     {
       icon: <FaBoxes size={22} />,
       label: "Compras",
-      key: "purchases",
+      key: "acquirements",
     },
   ];
 

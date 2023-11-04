@@ -53,7 +53,7 @@ export default function Products() {
       render: (item: Order) => (
         <Link
           className={styles.containerIcons}
-          href={`/purchases/${item.codigo_ordem}`}
+          href={`/acquirements/${item.codigo_ordem}`}
         >
           <FaRegEye size={24} />
         </Link>
@@ -68,7 +68,10 @@ export default function Products() {
           <h1>Compras</h1>
         </Col>
         <Col>
-          <Button onClick={() => router.push("/purchases/create")} type="link">
+          <Button
+            onClick={() => router.push("/acquirements/create")}
+            type="link"
+          >
             Realizar compra
           </Button>
         </Col>
