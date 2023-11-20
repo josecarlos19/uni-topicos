@@ -8,18 +8,6 @@ const items = [
     key: "1",
     label: (
       <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://www.antgroup.com"
-      >
-        Meu perfil
-      </a>
-    ),
-  },
-  {
-    key: "2",
-    label: (
-      <a
         onClick={() =>
           signOut({
             redirect: true,
