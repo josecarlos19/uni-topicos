@@ -13,8 +13,14 @@ const App = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassowrd, setConfirmPassword] = useState("");
+
   const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
+
+  const checkPassword = () => {
+    return password === confirmPassowrd;
+  };
 
   const openNotification = (error: string) => {
     api.open({
@@ -28,16 +34,20 @@ const App = () => {
   };
 
   const submit = async () => {
-    await axios
-      .post(`http://localhost:3001/signup`, {
-        email,
-        name,
-        password,
-      })
-      .then(() => {
-        router.push("/login");
-      })
-      .catch((error) => openNotification(error.response.data.error));
+    if (checkPassword()) {
+      await axios
+        .post(`http://localhost:3001/signup`, {
+          email,
+          name,
+          password,
+        })
+        .then(() => {
+          router.push("/login");
+        })
+        .catch((error) => openNotification(error.response.data.error));
+    } else {
+      openNotification("As senhas não coincidem");
+    }
   };
 
   return (
@@ -99,7 +109,7 @@ const App = () => {
             </Form.Item>
 
             <Form.Item
-              name="password"
+              name="confirmPassword"
               rules={[
                 {
                   required: true,
@@ -111,7 +121,7 @@ const App = () => {
                 prefix={<LockOutlined className="site-form-item-icon" />}
                 type="password"
                 placeholder="Confirme sua senha"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </Form.Item>
 
