@@ -12,6 +12,7 @@ const productYupSchema = yup.object({
   name: yup.string().required("O nome é obrigatório"),
   description: yup.string().required("A descrição é obrigatória"),
   quantity: yup.number().required("A quantidade é obrigatória"),
+  min_quantity: yup.number().required("A quantidade mínima é obrigatória"),
   price: yup.number().required("O preço é obrigatório"),
   category: yup.string().required("A categoria é obrigatória"),
   type: yup.string().required("O tipo é obrigatório"),
@@ -112,6 +113,23 @@ export default function Create() {
                         />
                       </Form.Item>
                     </Col>
+
+                    <Col span={12}>
+                      <Form.Item
+                        label="Quantidade mínima"
+                        validateStatus={errors.quantity ? "error" : "success"}
+                        help={errors.quantity?.message}
+                      >
+                        <Controller
+                          name="min_quantity"
+                          control={control}
+                          render={({ field }) => (
+                            <Input {...field} required={true} type="number" />
+                          )}
+                        />
+                      </Form.Item>
+                    </Col>
+
                     <Col span={12}>
                       <Form.Item
                         label="Preço"
