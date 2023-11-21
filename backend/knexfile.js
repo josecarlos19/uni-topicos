@@ -16,4 +16,17 @@ module.exports = {
       directory: "./src/data/seeds",
     },
   },
+  test: {
+    client: "sqlite3",
+    connection: {
+      filename: "./testDb.sqlite3",
+    },
+    useNullAsDefault: true,
+    migrations: {
+      directory: "./src/data/migrations",
+    },
+    seeds: {
+      directory: "./src/data/seeds",
+    },
+  },
 };
