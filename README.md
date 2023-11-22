@@ -37,3 +37,13 @@
 
 - E por fim, executar **npm run dev** para iniciar o projeto na porta 3000
   - ```O projeto estará disponível em http://localhost:3000```
+
+## Testes
+### Tecnologias utilizadas nos testes
+- Jest
+- Supertest
+
+## Passos para executar os testes
+- Entrar na pasta backend
+- Executar **npm run test** na raiz da pasta backend
+  - ```Executa os testes```
