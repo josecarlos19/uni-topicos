@@ -2,38 +2,96 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.seed = function (knex) {
-  return knex("products")
-    .del()
-    .then(function () {
-      return knex("products").insert([
-        {
-          name: "Maçã",
-          user_id: 1,
-          description: "Vermelha e deliciosa",
-          quantity: 0,
-          price: 1.0,
-          category: "Fruta",
-          type: "Maçã Argentina",
-        },
-        {
-          name: "Laranja",
-          user_id: 1,
-          description: "Suculenta e refrescante",
-          quantity: 0,
-          price: 3.5,
-          category: "Fruta",
-          type: "Laranja Navel",
-        },
-        {
-          name: "Banana",
-          user_id: 1,
-          description: "Amarela e nutritiva",
-          quantity: 0,
-          price: 2.5,
-          category: "Fruta",
-          type: "Banana Cavendish",
-        },
-      ]);
-    });
+exports.seed = async function (knex) {
+  await knex("products").del();
+  await knex("products").insert([
+    {
+      id: 1,
+      name: "Maçã",
+      user_id: 1,
+      description: "Vermelha e deliciosa",
+      quantity: 0,
+      min_quantity: 0,
+      price: 1.0,
+      category: "Fruta",
+      type: "Maçã Argentina",
+    },
+    {
+      id: 2,
+      name: "Banana",
+      user_id: 1,
+      description: "Amarela e deliciosa",
+      quantity: 0,
+      min_quantity: 0,
+      price: 1.0,
+      category: "Fruta",
+      type: "Banana Nanica",
+    },
+    {
+      id: 3,
+      name: "Pera",
+      user_id: 1,
+      description: "Amarela e deliciosa",
+      quantity: 0,
+      min_quantity: 0,
+      price: 1.0,
+      category: "Fruta",
+      type: "Pera Argentina",
+    },
+    {
+      id: 4,
+      name: "Manga",
+      user_id: 1,
+      description: "Amarela e deliciosa",
+      quantity: 0,
+      min_quantity: 0,
+      price: 1.0,
+      category: "Fruta",
+      type: "Manga Tommy",
+    },
+    {
+      id: 5,
+      name: "Abacaxi",
+      user_id: 1,
+      description: "Amarela e deliciosa",
+      quantity: 0,
+      min_quantity: 0,
+      price: 1.0,
+      category: "Fruta",
+      type: "Abacaxi Pérola",
+    },
+    {
+      id: 6,
+      name: "Laranja",
+      user_id: 1,
+      description: "Amarela e deliciosa",
+      quantity: 0,
+      min_quantity: 0,
+      price: 1.0,
+      category: "Fruta",
+      type: "Laranja Pera",
+    },
+    {
+      id: 7,
+      name: "Uva",
+      user_id: 1,
+      description: "Amarela e deliciosa",
+      quantity: 0,
+      min_quantity: 0,
+      price: 1.0,
+      category: "Fruta",
+      type: "Uva Itália",
+    },
+    {
+      id: 8,
+      name: "Melancia",
+      user_id: 1,
+      description: "Amarela e deliciosa",
+      quantity: 0,
+      min_quantity: 0,
+      price: 1.0,
+      category: "Fruta",
+      type: "Melancia",
+    },
+  ]);
 };
