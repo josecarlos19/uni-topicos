@@ -1,7 +1,8 @@
 const knexC = require("knex");
 const config = require("../../../knexfile");
 const moment = require("moment");
-const knex = knexC(config.development);
+const env = process.env.NODE_ENV || "development";
+const knex = knexC(config[env]);
 
 class CustomerService {
   async get(userId) {

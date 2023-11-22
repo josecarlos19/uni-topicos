@@ -1,7 +1,8 @@
 const knexC = require("knex");
 const config = require("../../../knexfile");
 const FinancialService = require("./FinancialService");
-const knex = knexC(config.development);
+const env = process.env.NODE_ENV || "development";
+const knex = knexC(config[env]);
 
 class ProductService {
   async get(userId, page = 1, limit = 10) {

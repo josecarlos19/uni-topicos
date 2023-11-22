@@ -1,7 +1,8 @@
 const knexC = require("knex");
 const config = require("../../../knexfile");
 const OrderService = require("./OrderService");
-const knex = knexC(config.development);
+const env = process.env.NODE_ENV || "development";
+const knex = knexC(config[env]);
 const moment = require("moment");
 
 async function checkProductIsAvailableOrValidToBuy(products) {

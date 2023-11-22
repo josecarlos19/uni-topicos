@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const knexC = require("knex");
 const config = require("../../../knexfile");
-const knex = knexC(config.development);
+const env = process.env.NODE_ENV || "development";
+const knex = knexC(config[env]);
 
 module.exports = async (req, res, next) => {
   const authHeader = req.headers.authorization;

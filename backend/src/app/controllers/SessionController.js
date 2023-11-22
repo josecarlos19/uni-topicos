@@ -1,6 +1,7 @@
+const env = process.env.NODE_ENV || "development";
 const knexC = require("knex");
 const config = require("../../../knexfile");
-const knex = knexC(config.development);
+const knex = knexC(config[env]);
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 

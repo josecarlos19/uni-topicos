@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --verbose --forceExit --detectOpenHandles",
-    "dev": "npx nodemon src/server.js"
+    "test": "NODE_ENV=test jest --verbose --forceExit --detectOpenHandles",
+    "dev": "NODE_ENV=development npx nodemon src/server.js"
   },
   "keywords": [],
   "author": "",
