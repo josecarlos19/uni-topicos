@@ -39,9 +39,12 @@
   - ```O projeto estará disponível em http://localhost:3000```
 
 ## Testes
+
 ### Tecnologias utilizadas nos testes
 - Jest
 - Supertest
+
+### Os testes estão na pasta backend/src/tests
 
 ## Passos para executar os testes
 - Entrar na pasta backend
