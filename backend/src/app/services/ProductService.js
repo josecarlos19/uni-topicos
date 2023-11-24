@@ -66,7 +66,7 @@ class ProductService {
       .insert({ ...payload, user_id: userId })
       .returning(["id", "quantity", "price"]);
 
-    await FinancialService.buy(createdProduct, null, userId);
+    await FinancialService.buy(createdProduct, null, userId, true);
 
     return createdProduct;
   }

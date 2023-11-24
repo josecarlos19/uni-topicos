@@ -53,7 +53,7 @@ async function checkProductIsAvailableOrValidToSell(products) {
 }
 
 class FinancialService {
-  async buy(products, buyer_id, userId) {
+  async buy(products, buyer_id, userId, storingProducts = false) {
     products.some((product) => {
       if (product.quantity <= 0 || product.price < 0 || !product.id) {
         throw new Error("Missing product information");
@@ -67,6 +67,15 @@ class FinancialService {
         customer_id: null,
         type: "buy",
       };
+
+      if (storingProducts) {
+        products = products.map((product) => {
+          return {
+            ...product,
+            quantity: 0,
+          };
+        });
+      }
 
       const result = await OrderService.store(
         orderPayload,
