@@ -31,7 +31,7 @@ export default function Products() {
   const openNotification = (title: string, body: string, type: string) => {
     api.open({
       message: title,
-      duration: 0,
+      duration: 1.3,
       description: body,
       icon:
         type === "low_quantity" ? (
@@ -39,10 +39,6 @@ export default function Products() {
         ) : (
           <HiMiniArchiveBoxXMark size={24} color={"#ff1e00"} />
         ),
-
-      onClick: () => {
-        router.push("/acquirements/create");
-      },
     });
   };
 
