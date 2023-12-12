@@ -31,7 +31,7 @@ export default function Products() {
   const openNotification = (title: string, body: string, type: string) => {
     api.open({
       message: title,
-      duration: 1.3,
+      duration: 1.8,
       description: body,
       icon:
         type === "low_quantity" ? (
