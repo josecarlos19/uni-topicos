@@ -36,7 +36,7 @@ export default function Show(props: Props) {
       message: "Sucesso!",
       duration: 2,
       description:
-        "O produto foi editado com sucesso. Você será redirecionado.",
+        "O cliente foi editado com sucesso. Você será redirecionado.",
       icon: <FaCheck size={24} color={"#3ddf14"} />,
     });
   };

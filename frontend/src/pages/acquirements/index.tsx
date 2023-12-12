@@ -33,7 +33,7 @@ export default function Products() {
 
   const columns = [
     {
-      title: "Código da venda",
+      title: "Código da compra",
       dataIndex: "codigo_ordem",
       key: "codigo_ordem",
       width: "10%",

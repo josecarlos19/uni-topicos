@@ -114,7 +114,7 @@ export default function Show(props: Props) {
             <Row justify={"space-between"}>
               <Col span={8}>
                 <Button
-                  onClick={() => router.push("/purchases")}
+                  onClick={() => router.push("/acquirements")}
                   type="primary"
                   size={"middle"}
                 >

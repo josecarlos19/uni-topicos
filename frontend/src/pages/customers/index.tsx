@@ -71,7 +71,7 @@ export default function Customers() {
       responsive: ["md"],
       render: (item: Customer) => (
         <Popconfirm
-          title="Deletar produto?"
+          title="Deletar cliente?"
           description="Essa ação não pode ser desfeita."
           onConfirm={() => deleteItem(item.id)}
           okText="Sim, deletar"
