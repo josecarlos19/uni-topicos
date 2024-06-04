@@ -68,7 +68,7 @@ export default function Products() {
             </Button>
           </Popconfirm>
         ) : (
-          <></>
+          "Cancelada"
         ),
     },
     {
